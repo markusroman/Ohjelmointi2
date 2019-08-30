@@ -8,7 +8,7 @@ int main()
     int amount = 0;
     std::cin >> amount;
 
-    int total_value = 0;
+    double total_value = 0.0;
     int current = 1;
 
     if (amount < 1) {
@@ -22,7 +22,10 @@ int main()
         std::cin >> temp;
 
         total_value += temp;
-        std::cout << "= " << total_value;
         current++;
     }
+
+    double final_mean = 0.0;
+    final_mean = total_value / amount;
+    std::cout << "Mean value of the given numbers is " << final_mean << std::endl;
 }
