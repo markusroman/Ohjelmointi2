@@ -8,7 +8,12 @@ int main()
     std::cin >> amount;
     int current = 1;
     while (current < amount + 1) {
-        std::cout << current << std::endl;
+        if (current % 3 == 0) {
+            std::cout << "zip" << std::endl;
+        } else {
+            std::cout << current << std::endl;
+        }
+
         current++;
     }
 }
