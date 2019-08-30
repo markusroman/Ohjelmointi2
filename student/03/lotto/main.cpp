@@ -13,11 +13,11 @@ int main()
 
     if (total < 0 or drawn < 0) {
         std::cout << "The number of balls must be a positive number." << std::endl;
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
     if (total < drawn) {
         std::cout << "The maximum number of drawn balls is the total amount of balls." << std::endl;
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
 
     unsigned long int n = kertoma(total);
