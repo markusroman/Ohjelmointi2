@@ -5,4 +5,24 @@
 int main()
 {
     std::cout << "From how many integer numbers you want to count the mean value? ";
+    int amount = 0;
+    std::cin >> amount;
+
+    int total_value = 0;
+    int current = 1;
+
+    if (amount < 1) {
+        std::cout << "Cannot count mean value from " << amount << " numbers" << std::endl;
+        return 0;
+    }
+
+    while (current < amount + 1) {
+        std::cout << "Input " << current << ". number: ";
+        int temp = 0;
+        std::cin >> temp;
+
+        total_value += temp;
+        std::cout << "= " << total_value;
+        current++;
+    }
 }
