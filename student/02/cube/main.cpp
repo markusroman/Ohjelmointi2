@@ -9,6 +9,10 @@ int main()
     std::cin >> given_number;
 
     int cube = pow(given_number, 3);
-    std::cout << cube << std::endl;
+
+
+
+    std::cout << "The cube of " << given_number << " is " << cube << "." << std::endl;
+
     return 0;
 }
