@@ -1,5 +1,6 @@
 #include <iostream>
 
+unsigned long int kertoma(int n);
 
 int main()
 {
@@ -19,6 +20,26 @@ int main()
         return EXIT_FAILURE;
     }
 
+    unsigned long int n = kertoma(total);
+    unsigned long int p = kertoma(drawn);
+    unsigned long int np = kertoma(total - drawn);
 
-    return 0;
+    unsigned long int prob = n / (np * p);
+    std::cout << "The probability of guessing all " << drawn << " balls correctly is 1/" << prob << std::endl;
+
+    return EXIT_SUCCESS;
+}
+
+unsigned long int kertoma(int x) {
+    unsigned long int total = 1;
+    if (x == 0) {
+        return total;
+    }
+
+    while (x > 1) {
+        total *= x;
+        --x;
+    }
+
+    return total;
 }
