@@ -14,6 +14,23 @@ int main()
         return EXIT_FAILURE;
     }
 
+    std::cout << "Enter the text to be encrypted: ";
+    std::string message = "";
+    std::cin >> message;
+    std::string::size_type msg_length = message.length();
+
+    std::string alphabets = "abcdefghijklmnopqrstuvwxyz";
+    std::string encryption = "";
+    char current = 'a';
+    int current_id = 0;
+    for (int i; i < msg_length; ++i) {
+        current_id = alphabets.find(message.at(i));
+        current = key.at(current_id);
+        encryption += current;
+    }
+
+    std::cout << "Encrypted text: " << encryption << std::endl;
+
     return EXIT_SUCCESS;
 }
 
@@ -26,7 +43,6 @@ bool faulty_key(std::string key) {
     std::string help_string = "abcdefghijklmnopqrstuvwxyz";
     for (int x = 0; x < 26; ++x) {
 
-        std::cout << x << std::endl;
         std::string::size_type location = key.find(help_string.at(x));
 
         if (! islower(key.at(x))) {
