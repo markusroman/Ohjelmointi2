@@ -23,7 +23,7 @@ int main()
     std::string encryption = "";
     char current = 'a';
     int current_id = 0;
-    for (unsigned int x; x < msg_length; ++x) {
+    for (unsigned int x = 0; x < msg_length; ++x) {
         current_id = alphabets.find(message.at(x));
         current = key.at(current_id);
         encryption += current;
