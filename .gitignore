@@ -3,6 +3,8 @@
 
 */examples*
 */templates*
+*build-*
+
 
 !core/
 *.*#
