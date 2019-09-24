@@ -5,7 +5,27 @@
 
 // TODO: Implement split function here
 // Do not change main function
+std::vector< std::string > split(std::string line, char separator, bool ignore = false) {
+    std::vector< std::string > parts;
 
+    while (line.find(separator) != std::string::npos) {
+        std::string part = line.substr(0, line.find(separator));
+        if (part.length() != 0) {
+            parts.push_back(part);
+        }
+        if (ignore == false and part.length() == 0) {
+            parts.push_back("");
+        }
+
+        line = line.substr(line.find(separator) + 1);
+
+    }
+    if (line.length() != 0) {
+        parts.push_back(line);
+    }
+
+    return parts;
+}
 
 int main()
 {
