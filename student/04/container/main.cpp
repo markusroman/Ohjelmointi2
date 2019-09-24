@@ -26,11 +26,12 @@ bool same_values(std::vector< int >& integers) {
 }
 
 bool is_ordered_non_strict_ascending(std::vector< int >& integers) {
-    std::vector< int >::size_type length = integers.size();
-    if (length < 2){
+    std::vector< int >::size_type size = integers.size();
+    if (size < 2){
         return true;
     }
 
+    int length = size;
     for (int i = 1; i < length; i++) {
         if (integers.at(i - 1) > integers.at(i)) {
             return false;
@@ -39,11 +40,12 @@ bool is_ordered_non_strict_ascending(std::vector< int >& integers) {
     return true;
 }
 bool is_arithmetic_series(std::vector< int >& integers) {
-    std::vector< int >::size_type length = integers.size();
-    if (length < 3){
+    std::vector< int >::size_type size = integers.size();
+    if (size < 3){
         return true;
     }
     int diff = integers.at(1) - integers.at(0);
+    int length = size;
 
     for (int i = 2; i < length; i++) {
         if (integers.at(i) - integers.at(i - 1) != diff) {
@@ -54,11 +56,12 @@ bool is_arithmetic_series(std::vector< int >& integers) {
     return true;
 }
 bool is_geometric_series(std::vector< int >& integers) {
-    std::vector< int >::size_type length = integers.size();
-    if (length < 3){
+    std::vector< int >::size_type size = integers.size();
+    if (size < 3){
         return true;
     }
     double div = integers.at(1) / integers.at(0);
+    int length = size;
 
     for (int i = 2; i < length; i++) {
         if (integers.at(i) / integers.at(i - 1) != div) {
