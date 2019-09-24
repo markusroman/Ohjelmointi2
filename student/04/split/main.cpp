@@ -22,6 +22,8 @@ std::vector< std::string > split(std::string line, char separator, bool ignore =
     }
     if (line.length() != 0) {
         parts.push_back(line);
+    } else if (ignore == false and line.length() == 0){
+        parts.push_back("");
     }
 
     return parts;
