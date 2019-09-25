@@ -5,6 +5,11 @@
  * Students can modify both parts of the class and add their own variables
  * and methods. Implementations for the methods should be in the source file.
  *
+ * Program author ( Fill with your own info )
+ * Name: Markus Röman
+ * Student number: 281954
+ * UserID: romanm ( Necessary due to gitlab folder naming. )
+ * E-Mail: markus.roman@tuni.fi
  * */
 #ifndef NUMBERTILE_HH
 #define NUMBERTILE_HH
@@ -17,12 +22,6 @@ public:
     // Public part contains variables and methods that can be used outside the
     // class itself.
 
-    /* About pairs: the elements in a pair can be accessed with pair.first
-    * and pair.second. If you do not wish to use pairs, you can modify the
-    * given code to work without. Just replace the pair-parameter here & in the
-    * source file with "int y, int x" and then modify the main.cpp in the
-    * indicated spot.
-    * */
     // Constructor that takes in a value, a location and the board the tile is on.
     NumberTile(int value);
 
@@ -33,9 +32,16 @@ public:
     // if the tile already contains some value.
     bool setValue(int value);
 
+    // returns the tile's value
     int getValue();
+
+    // Doubles a tile's current value
     void add();
+
+    // Sets a tile's value to 0
     void clear();
+
+    // Changes a tile's value to the one provided as a parameter
     void Move(int value_to_move);
 private:
     // Private part contains variables and methods that shouldn't be usable

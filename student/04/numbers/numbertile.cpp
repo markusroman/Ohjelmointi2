@@ -4,17 +4,17 @@
  *
  * Method implementations should be added to the same level as the existing
  * ones.
- * */
+ *
+ * Program author ( Fill with your own info )
+ * Name: Markus Röman
+ * Student number: 281954
+ * UserID: romanm ( Necessary due to gitlab folder naming. )
+ * E-Mail: markus.roman@tuni.fi
+ */
 #include "numbertile.hh"
 #include <iomanip>
 #include <iostream>
 
-// Pair addition operator. Allows to do result_pair = pair_1 + pair_2
-// std::pair<int, int>operator +(std::pair<int, int> lhs, std::pair<int, int> rhs){
-//    return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);
-// }
-
-// Modify the second line if you don't wish to use pairs.
 NumberTile::NumberTile(int value):
     value_(value)
 {
