@@ -44,4 +44,8 @@ bool NumberTile::setValue(int value)
     return true;
 }
 
+int NumberTile::getValue() {
+    return value_;
+}
+
 

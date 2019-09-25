@@ -32,6 +32,8 @@ public:
     // Tries to set a new value to the tile. Returns true if successful, false
     // if the tile already contains some value.
     bool setValue(int value);
+
+    int getValue();
 private:
     // Private part contains variables and methods that shouldn't be usable
     // outside the class.

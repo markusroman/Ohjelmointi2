@@ -98,6 +98,31 @@ void print(std::vector<std::vector<NumberTile>> &board){
     std::cout << std::string(PRINT_WIDTH * SIZE + 1, '-') << std::endl;
 }
 
+void MoveLeft(){
+
+}
+void MoveDown(){
+
+}
+void MoveRight(){
+
+}
+void MoveUp(){
+
+}
+
+bool WinCheck( int GOAL, std::vector<std::vector<NumberTile>> &board ){
+    for ( int i = 0 ; i < SIZE ; ++i ) {
+        for ( int j = 0 ; j < SIZE ; ++j ) {
+            if ( board.at(i).at(j).getValue() == GOAL ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 int main()
 {
     // Declare the board and randomengine.
@@ -108,14 +133,42 @@ int main()
 
     initBoard(board, randomEng, distr);
 
+
     std::cout << "Give a goal value or an empty line: ";
     std::string str_goal = "";
     getline(std::cin, str_goal);
-    int POINT_GOAL = DEFAULT_GOAL;
+    int GOAL;
     if( str_goal != "") {
-        POINT_GOAL = stoi(str_goal);
+        GOAL = stoi(str_goal);
+    } else {
+        GOAL = DEFAULT_GOAL;
     }
 
-
     print(board);
+
+    while ( ! WinCheck(GOAL, board) ) {
+        std::cout << "Dir> ";
+        std::string command = "";
+        getline(std::cin, command);
+
+        if ( command == "a" ) {
+            // Move left
+
+        } else if ( command == "s" ) {
+            // Move down
+
+        } else if ( command == "d" ) {
+            // Move right
+
+        } else if ( command == "w" ) {
+            // Move up
+
+        } else if ( command == "q" ) {
+            // Quit
+            return EXIT_SUCCESS;
+        } else {
+            // Unknown command
+            std::cout << "Try again!" << std::endl;
+        }
+    }
 }
