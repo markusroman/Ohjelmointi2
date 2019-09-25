@@ -55,3 +55,7 @@ void NumberTile::add() {
 void NumberTile::zero() {
     value_ = 0;
 }
+
+void NumberTile::Move() {
+    
+}

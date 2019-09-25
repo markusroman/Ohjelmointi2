@@ -34,6 +34,8 @@ public:
     bool setValue(int value);
 
     int getValue();
+    void add();
+    void zero();
 private:
     // Private part contains variables and methods that shouldn't be usable
     // outside the class.

@@ -184,7 +184,8 @@ int main()
         // Move tiles to given direction
         if ( command == "a" or command == "w" or command == "s" or command == "d" ) {
             moveTiles(board, command);
-
+            newValue(board,randomEng, distr);
+            
         } else if ( command == "q" ) {  // Quit
             return EXIT_SUCCESS;
         } else {
@@ -193,8 +194,10 @@ int main()
             std::cout << std::endl;
         }
 
-        newValue(board,randomEng, distr);
+        
 
         print(board);
     }
+    
+    return EXIT_SUCCESS;
 }
