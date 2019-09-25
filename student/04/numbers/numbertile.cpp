@@ -37,8 +37,10 @@ bool NumberTile::setValue(int value)
 {
     // Students should write their own implementation here. Existing return
     // statement is allowed to be modified or removed.
-
-
+    if ( value_ != 0 ) {
+        return false;
+    }
+    value_ = value;
     return true;
 }
 

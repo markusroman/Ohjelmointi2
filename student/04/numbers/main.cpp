@@ -13,10 +13,10 @@
  * tile can't be added to the board.
  *
  * Program author ( Fill with your own info )
- * Name: Teemu Teekkari
- * Student number: 123456
- * UserID: teekkart ( Necessary due to gitlab folder naming. )
- * E-Mail: teemu.teekkari@tuni.fi
+ * Name: Markus Röman
+ * Student number: 281954
+ * UserID: romanm ( Necessary due to gitlab folder naming. )
+ * E-Mail: markus.roman@tuni.fi
  *
  * Notes about the program and it's implementation:
  * */
@@ -107,5 +107,15 @@ int main()
     std::uniform_int_distribution<int> distr(0, SIZE - 1);
 
     initBoard(board, randomEng, distr);
+
+    std::cout << "Give a goal value or an empty line: ";
+    std::string str_goal = "";
+    getline(std::cin, str_goal);
+    int POINT_GOAL = DEFAULT_GOAL;
+    if( str_goal != "") {
+        POINT_GOAL = stoi(str_goal);
+    }
+
+
     print(board);
 }
