@@ -55,7 +55,7 @@ void initBoard(std::vector<std::vector<NumberTile>> &board,
         for ( auto x = 0; x < SIZE; x++ ){
             // If you don't want to use pairs, replace "std::make_pair(y, x)"
             // with "y, x".
-            board.at(y).push_back(NumberTile(0, std::make_pair(y, x), &board));
+            board.at(y).push_back(NumberTile(0));
         }
 
     }
@@ -98,33 +98,45 @@ void print(std::vector<std::vector<NumberTile>> &board){
     std::cout << std::string(PRINT_WIDTH * SIZE + 1, '-') << std::endl;
 }
 
-void moveTiles( std::vector<std::vector<NumberTile>> board, std::string direction ) {
+void moveTiles( std::vector<std::vector<NumberTile>> &board, std::string direction ) {
     if ( direction == "w" ) {       // Move up
         for ( int x = 0 ; x < SIZE ; ++x ) {
             for ( int y = 3 ; y > 0 ; --y ) {
                 if ( board.at(y).at(x).getValue() == board.at(y - 1).at(x).getValue() ) {
-                    board.at(y).at(x).zero();
+                    board.at(y).at(x).clear();
                     board.at(y - 1).at(x).add();
+                } else if ( board.at(y - 1).at(x).getValue() == 0 ) {
+                    int value_to_move = board.at(y).at(x).getValue();
+                    board.at(y - 1).at(x).Move(value_to_move);
+                    board.at(y).at(x).clear();
                 }
             }
         }
 
-    } if ( direction == "d" ) {     // Move down
+    } if ( direction == "s" ) {     // Move down
         for ( int x = 0 ; x < SIZE ; ++x ) {
             for ( int y = 0 ; y < SIZE - 1 ; ++y ) {
                 if ( board.at(y).at(x).getValue() == board.at(y + 1).at(x).getValue() ) {
-                    board.at(y).at(x).zero();
+                    board.at(y).at(x).clear();
                     board.at(y + 1).at(x).add();
+                } else if ( board.at(y + 1).at(x).getValue() == 0 ) {
+                    int value_to_move = board.at(y).at(x).getValue();
+                    board.at(y + 1).at(x).Move(value_to_move);
+                    board.at(y).at(x).clear();
                 }
             }
         }
 
-    } if ( direction == "s" ) {     // Move left
+    } if ( direction == "a" ) {     // Move left
         for ( int y = 0 ; y < SIZE ; ++y ) {
             for ( int x = 3 ; x > 0 ; --x ) {
                 if ( board.at(y).at(x).getValue() == board.at(y).at(x - 1).getValue() ) {
-                    board.at(y).at(x).zero();
+                    board.at(y).at(x).clear();
                     board.at(y).at(x - 1).add();
+                } else if ( board.at(y).at(x - 1).getValue() == 0 ) {
+                    int value_to_move = board.at(y).at(x).getValue();
+                    board.at(y).at(x - 1).Move(value_to_move);
+                    board.at(y).at(x).clear();
                 }
             }
         }
@@ -133,8 +145,12 @@ void moveTiles( std::vector<std::vector<NumberTile>> board, std::string directio
         for ( int y = 0 ; y < SIZE ; ++y ) {
             for ( int x = 3 ; x < SIZE - 1 ; ++x ) {
                 if ( board.at(y).at(x).getValue() == board.at(y).at(x + 1).getValue() ) {
-                    board.at(y).at(x).zero();
+                    board.at(y).at(x).clear();
                     board.at(y).at(x + 1).add();
+                } else if ( board.at(y).at(x + 1).getValue() == 0 ) {
+                    int value_to_move = board.at(y).at(x).getValue();
+                    board.at(y).at(x + 1).Move(value_to_move);
+                    board.at(y).at(x).clear();
                 }
             }
         }
@@ -142,14 +158,15 @@ void moveTiles( std::vector<std::vector<NumberTile>> board, std::string directio
 }
 
 bool WinCheck( int GOAL, std::vector<std::vector<NumberTile>> &board ){
+    bool board_full = true;
     for ( int i = 0 ; i < SIZE ; ++i ) {
         for ( int j = 0 ; j < SIZE ; ++j ) {
             if ( board.at(i).at(j).getValue() == GOAL ) {
+                std::cout << "Goal reached! Congratulations." << std::endl;
                 return true;
             }
         }
     }
-
     return false;
 }
 
@@ -185,7 +202,7 @@ int main()
         if ( command == "a" or command == "w" or command == "s" or command == "d" ) {
             moveTiles(board, command);
             newValue(board,randomEng, distr);
-            
+
         } else if ( command == "q" ) {  // Quit
             return EXIT_SUCCESS;
         } else {
@@ -194,10 +211,10 @@ int main()
             std::cout << std::endl;
         }
 
-        
+
 
         print(board);
     }
-    
+
     return EXIT_SUCCESS;
 }

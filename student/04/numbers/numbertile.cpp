@@ -10,15 +10,13 @@
 #include <iostream>
 
 // Pair addition operator. Allows to do result_pair = pair_1 + pair_2
-std::pair<int, int>operator +(std::pair<int, int> lhs, std::pair<int, int> rhs){
-    return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);
-}
+// std::pair<int, int>operator +(std::pair<int, int> lhs, std::pair<int, int> rhs){
+//    return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);
+// }
 
 // Modify the second line if you don't wish to use pairs.
-NumberTile::NumberTile(int value,
-                       std::pair<int, int> coords,
-                       std::vector<std::vector<NumberTile> > *board)
-    : value_(value)
+NumberTile::NumberTile(int value):
+    value_(value)
 {
     // Students should write their own implementation here, if necessary.
 
@@ -52,6 +50,10 @@ void NumberTile::add() {
     value_ *= 2;
 }
 
-void NumberTile::zero() {
+void NumberTile::clear() {
     value_ = 0;
+}
+
+void NumberTile::Move(int value_to_move) {
+    value_ = value_to_move;
 }
