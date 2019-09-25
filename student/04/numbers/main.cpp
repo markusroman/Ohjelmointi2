@@ -19,6 +19,8 @@
  * E-Mail: markus.roman@tuni.fi
  *
  * Notes about the program and it's implementation:
+ * Program works as wanted. The functions which move the tiles could be done more efficiently.
+ * Code gets a little repetetive in some places.
  * */
 
 #include "numbertile.hh"
@@ -191,7 +193,7 @@ bool IsGameWon( int pointGoal, std::vector<std::vector<NumberTile>> &board ){
     // Checks if a tile has reached the point goal and returns a boolean
     for ( int y = 0 ; y < SIZE ; ++y ) {
         for ( int x = 0 ; x < SIZE ; ++x ) {
-            if ( board.at(y).at(x).getValue() == pointGoal ) {
+            if ( board.at(y).at(x).getValue() >= pointGoal ) {
                 std::cout << "Goal reached! Congratulations." << std::endl;
                 return true;
             }
