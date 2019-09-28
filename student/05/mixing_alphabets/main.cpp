@@ -20,6 +20,9 @@ int main()
         }
 
         // TODO: implement your solution here
+        if ( word.length() > 3 ) {
+            shuffle(word.begin() + 1, word.end() - 1, generator);
+        }
 	
         std::cout << word << std::endl;
     }
