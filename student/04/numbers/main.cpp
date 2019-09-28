@@ -101,15 +101,13 @@ void print(std::vector<std::vector<NumberTile>> &board){
 }
 
 
-/*  Every move-function first checks if two adjacent tiles
- *  have equal values and performs an adding operation if so.
- *  After this the next tile is checked. If the value is zero
- *  the current  tile's value is transferred to the new one and
- *  then gets cleared ( value set to 0 ).
+/*  Every move-function first moves numbers to chosen direction. Then adds
+ * the adjacent numbers if they can be added. And finally moves the added
+ * values to one side of the board getting rid of the zeroes between.
  */
 
 void moveRight( std::vector<std::vector<NumberTile>> &board ) {
-    // Y-coordinate stays constant and X-coordinate changes in ascending order
+    // Y-coordinate stays constant and X-coordinate changes in descending order
     for ( int i = 0 ; i < 2 ; ++i ) {
         for ( int y = 0 ; y < SIZE ; ++y ) {
             for ( int x = 3 ; x > 0 ; --x ) {
@@ -141,7 +139,7 @@ void moveRight( std::vector<std::vector<NumberTile>> &board ) {
 }
 
 void moveDown( std::vector<std::vector<NumberTile>> &board ) {
-    // X-coordinate stays constant and Y-coordinate changes in an ascending order
+    // X-coordinate stays constant and Y-coordinate changes in descending order
     for ( int i = 0 ; i < 2 ; ++i ) {
         for ( int x = 0 ; x < SIZE ; ++x ) {
             for ( int y = 3 ; y > 0 ; --y ) {
@@ -173,7 +171,7 @@ void moveDown( std::vector<std::vector<NumberTile>> &board ) {
 }
 
 void moveLeft( std::vector<std::vector<NumberTile>> &board ) {
-    // Y-coordinate stays constant and X-coordinate changes in a descending order
+    // Y-coordinate stays constant and X-coordinate changes in ascending order
     for ( int i = 0 ; i < 2 ; ++i ) {
         for ( int y = 0 ; y < SIZE ; ++y ) {
             for ( int x = 0 ; x < SIZE - 1 ; ++x ) {
@@ -205,7 +203,7 @@ void moveLeft( std::vector<std::vector<NumberTile>> &board ) {
 }
 
 void moveUp( std::vector<std::vector<NumberTile>> &board ) {
-    // X-coordinate stays constant and Y-coordinate changes in a descending order
+    // X-coordinate stays constant and Y-coordinate changes in ascending order
     for ( int i = 0 ; i < 2 ; ++i ) {
         for ( int x = 0 ; x < SIZE ; ++x ) {
             for ( int y = 0 ; y < SIZE - 1 ; ++y ) {
@@ -249,13 +247,13 @@ void moveTiles( std::vector<std::vector<NumberTile>> &board, std::string directi
     }
 }
 
-bool IsGameWon( int pointGoal, std::vector<std::vector<NumberTile>> &board ){
+bool isGameWon( int point_goal, std::vector<std::vector<NumberTile>> &board ){
     // Checks if a tile has reached the point goal and returns a boolean
     for ( int y = 0 ; y < SIZE ; ++y ) {
         for ( int x = 0 ; x < SIZE ; ++x ) {
-            if ( board.at(y).at(x).getValue() >= pointGoal ) {
+            if ( board.at(y).at(x).getValue() >= point_goal ) {
                 print(board);
-                std::cout << "You reached the goal value of " << pointGoal << "!" << std::endl;
+                std::cout << "You reached the goal value of " << point_goal << "!" << std::endl;
                 return true;
             }
         }
@@ -263,7 +261,7 @@ bool IsGameWon( int pointGoal, std::vector<std::vector<NumberTile>> &board ){
     return false;
 }
 
-bool IsBoardFull( std::vector<std::vector<NumberTile>> &board ){
+bool isBoardFull( std::vector<std::vector<NumberTile>> &board ){
     // Checks if the board doesn't have an empty tile and returns a boolean
     for ( int y = 0 ; y < SIZE ; ++y ) {
         for ( int x = 0 ; x < SIZE ; ++x ) {
@@ -291,15 +289,15 @@ int main()
     std::cout << "Give a goal value or an empty line: ";
     std::string str_goal = "";
     getline(std::cin, str_goal);
-    int pointGoal;
+    int point_goal;
     if( str_goal != "") {
         try {
-            pointGoal = stoi(str_goal);
+            point_goal = stoi(str_goal);
         } catch ( std::invalid_argument& e) {
-            pointGoal = DEFAULT_GOAL;
+            point_goal = DEFAULT_GOAL;
         }
     } else {
-        pointGoal = DEFAULT_GOAL;
+        point_goal = DEFAULT_GOAL;
     }
 
     print(board);
@@ -316,8 +314,8 @@ int main()
             // adds a new number to a random free spot and prints the updated board
             moveTiles(board, command);
 
-            // Checks if board is full and ends the program if so
-            if ( IsBoardFull(board) or IsGameWon(pointGoal, board) ) {
+            // Checks if board is full or the game is won and ends the program if so
+            if ( isBoardFull(board) or isGameWon(point_goal, board) ) {
                 return EXIT_SUCCESS;
             }
             newValue(board,randomEng, distr);
@@ -328,7 +326,7 @@ int main()
             return EXIT_SUCCESS;
 
         } else {
-            // Unknown command
+            // Unknown command. Program asks for a new input
             std::cout << "Error: unknown command." << std::endl;
         }
     }
