@@ -111,15 +111,15 @@ void print(std::vector<std::vector<NumberTile>> &board){
 void moveRight( std::vector<std::vector<NumberTile>> &board ) {
     // Y-coordinate stays constant and X-coordinate changes in ascending order
     for ( int y = 0 ; y < SIZE ; ++y ) {
-        for ( int x = 0 ; x < SIZE - 1 ; ++x ) {
-            if ( board.at(y).at(x + 1).getValue() == 0 ) {
-                int value_to_move = board.at(y).at(x).getValue();
-                board.at(y).at(x + 1).Move(value_to_move);
-                board.at(y).at(x).clear();
+        for ( int x = 3 ; x > 0 ; --x ) {
+            if ( board.at(y).at(x).getValue() == 0 ) {
+                int value_to_move = board.at(y).at(x - 1).getValue();
+                board.at(y).at(x).Move(value_to_move);
+                board.at(y).at(x - 1).clear();
             }
-            if ( board.at(y).at(x).getValue() == board.at(y).at(x + 1).getValue() ) {
-                board.at(y).at(x).clear();
-                board.at(y).at(x + 1).add();
+            if ( board.at(y).at(x).getValue() == board.at(y).at(x - 1).getValue() ) {
+                board.at(y).at(x - 1).clear();
+                board.at(y).at(x).add();
             }
         }
     }
@@ -127,15 +127,15 @@ void moveRight( std::vector<std::vector<NumberTile>> &board ) {
 void moveDown( std::vector<std::vector<NumberTile>> &board ) {
     // X-coordinate stays constant and Y-coordinate changes in an ascending order
     for ( int x = 0 ; x < SIZE ; ++x ) {
-        for ( int y = 0 ; y < SIZE - 1 ; ++y ) {
-            if ( board.at(y + 1).at(x).getValue() == 0 ) {
-                int value_to_move = board.at(y).at(x).getValue();
-                board.at(y + 1).at(x).Move(value_to_move);
-                board.at(y).at(x).clear();
+        for ( int y = 3 ; y > 0 ; --y ) {
+            if ( board.at(y).at(x).getValue() == 0 ) {
+                int value_to_move = board.at(y - 1).at(x).getValue();
+                board.at(y).at(x).Move(value_to_move);
+                board.at(y - 1).at(x).clear();
             }
-            if ( board.at(y).at(x).getValue() == board.at(y + 1).at(x).getValue() ) {
-                board.at(y).at(x).clear();
-                board.at(y + 1).at(x).add();
+            if ( board.at(y).at(x).getValue() == board.at(y - 1).at(x).getValue() ) {
+                board.at(y - 1).at(x).clear();
+                board.at(y).at(x).add();
             }
         }
     }
@@ -143,15 +143,15 @@ void moveDown( std::vector<std::vector<NumberTile>> &board ) {
 void moveLeft( std::vector<std::vector<NumberTile>> &board ) {
     // Y-coordinate stays constant and X-coordinate changes in a descending order
     for ( int y = 0 ; y < SIZE ; ++y ) {
-        for ( int x = 3 ; x > 0 ; --x ) {
-            if ( board.at(y).at(x - 1).getValue() == 0 ) {
-                int value_to_move = board.at(y).at(x).getValue();
-                board.at(y).at(x - 1).Move(value_to_move);
-                board.at(y).at(x).clear();
+        for ( int x = 0 ; x < SIZE - 1 ; ++x ) {
+            if ( board.at(y).at(x).getValue() == 0 ) {
+                int value_to_move = board.at(y).at(x + 1).getValue();
+                board.at(y).at(x).Move(value_to_move);
+                board.at(y).at(x + 1).clear();
             }
-            if ( board.at(y).at(x).getValue() == board.at(y).at(x - 1).getValue() ) {
-                board.at(y).at(x).clear();
-                board.at(y).at(x - 1).add();
+            if ( board.at(y).at(x).getValue() == board.at(y).at(x + 1).getValue() ) {
+                board.at(y).at(x + 1).clear();
+                board.at(y).at(x).add();
             }
         }
     }
@@ -159,24 +159,23 @@ void moveLeft( std::vector<std::vector<NumberTile>> &board ) {
 void moveUp( std::vector<std::vector<NumberTile>> &board ) {
     // X-coordinate stays constant and Y-coordinate changes in a descending order
     for ( int x = 0 ; x < SIZE ; ++x ) {
-        for ( int y = 3 ; y > 0 ; --y ) {
-            if ( board.at(y - 1).at(x).getValue() == 0 ) {
-                int value_to_move = board.at(y).at(x).getValue();
-                board.at(y - 1).at(x).Move(value_to_move);
-                board.at(y).at(x).clear();
+        for ( int y = 0 ; y < SIZE - 1 ; ++y ) {
+            if ( board.at(y).at(x).getValue() == 0 ) {
+                int value_to_move = board.at(y + 1).at(x).getValue();
+                board.at(y).at(x).Move(value_to_move);
+                board.at(y + 1).at(x).clear();
             }
-            if ( board.at(y).at(x).getValue() == board.at(y - 1).at(x).getValue() ) {
-                board.at(y).at(x).clear();
-                board.at(y - 1).at(x).add();
+            if ( board.at(y).at(x).getValue() == board.at(y + 1).at(x).getValue() ) {
+                board.at(y + 1).at(x).clear();
+                board.at(y).at(x).add();
             }
         }
     }
 }
 
 void moveTiles( std::vector<std::vector<NumberTile>> &board, std::string direction ) {
-    // Moves the tiles to a chosen direction three times so
-    // that empty tiles between occupied tiles are avoided
-    for ( int i = 0 ; i < 3 ; i++ ) {
+    // Moves the tiles to a chosen direction
+    for ( int i = 1 ; i < SIZE ; ++i ) {
         if ( direction == "w" ) {           // Move up
             moveUp(board);
         } else if ( direction == "s" ) {    // Move down
@@ -194,7 +193,8 @@ bool IsGameWon( int pointGoal, std::vector<std::vector<NumberTile>> &board ){
     for ( int y = 0 ; y < SIZE ; ++y ) {
         for ( int x = 0 ; x < SIZE ; ++x ) {
             if ( board.at(y).at(x).getValue() >= pointGoal ) {
-                std::cout << "Goal reached! Congratulations." << std::endl;
+                print(board);
+                std::cout << "You reached the goal value of " << pointGoal << "!" << std::endl;
                 return true;
             }
         }
@@ -211,6 +211,8 @@ bool IsBoardFull( std::vector<std::vector<NumberTile>> &board ){
             }
         }
     }
+    print(board);
+    std::cout << "Can't add new tile, you lost!" << std::endl;
     return true;
 }
 
@@ -237,22 +239,20 @@ int main()
 
     print(board);
 
-    while ( ! IsGameWon(pointGoal, board) ) {
+    while ( true ) {
         // Loop that goes on until the game is won ( a tile reaches the point goal )
         std::cout << "Dir> ";
         std::string command = "";
         getline(std::cin, command);
 
         // Move tiles to given direction
-        if ( command == "a" or command == "w" or command == "s" or command == "d" ) {
+        if ( command == "a" || command == "w" || command == "s" || command == "d" ) {
             // If given command is a viable input program moves tiles,
             // adds a new number to a random free spot and prints the updated board
             moveTiles(board, command);
 
             // Checks if board is full and ends the program if so
-            if ( IsBoardFull(board) ) {
-                print(board);
-                std::cout << "Board full! Program ending." << std::endl;
+            if ( IsBoardFull(board) or IsGameWon(pointGoal, board) ) {
                 return EXIT_SUCCESS;
             }
             newValue(board,randomEng, distr);
@@ -260,13 +260,11 @@ int main()
 
         } else if ( command == "q" ) {  // Quit
             // Stops the program
-            std::cout << "Program ending!" << std::endl;
             return EXIT_SUCCESS;
 
         } else {
-            // Unknown command - new input is asked
-            std::cout << "Try again!" << std::endl;
-            std::cout << std::endl;
+            // Unknown command
+            std::cout << "Error: unknown command." << std::endl;
         }
     }
     return EXIT_SUCCESS;
