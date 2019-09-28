@@ -280,14 +280,14 @@ int main()
         point_goal = DEFAULT_GOAL;
     }
 
-
+    print(board);
 
     while ( true ) {
         /* Loop that goes on until the game is won
          *  ( a tile reaches the point goal ) or the
          * program is ended in some way
          */
-        print(board);
+
         std::cout << "Dir> ";
         std::string command = "";
         getline(std::cin, command);
@@ -303,6 +303,7 @@ int main()
                 return EXIT_SUCCESS;
             }
             newValue(board,randomEng, distr);
+            print(board);
 
         } else if ( command == "s" ) {
             moveDown(board);
@@ -310,6 +311,7 @@ int main()
                 return EXIT_SUCCESS;
             }
             newValue(board,randomEng, distr);
+            print(board);
 
         } else if ( command == "d" ) {
             moveRight(board);
@@ -317,6 +319,7 @@ int main()
                 return EXIT_SUCCESS;
             }
             newValue(board,randomEng, distr);
+            print(board);
 
         } else if ( command == "w" ) {
             moveUp(board);
@@ -324,6 +327,7 @@ int main()
                 return EXIT_SUCCESS;
             }
             newValue(board,randomEng, distr);
+            print(board);
 
         // Stops the program
         } else if ( command == "q" ) {  // Quit
