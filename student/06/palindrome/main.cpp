@@ -19,7 +19,6 @@ bool palindrome_recursive(std::string s)
       return false;
   } else {
     s = s.substr(1, s.length() - 2);
-    std::cout << s << std::endl;
     if ( ! palindrome_recursive(s) ) {
         return false;
     } else {
