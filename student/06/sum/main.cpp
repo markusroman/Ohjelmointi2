@@ -32,6 +32,17 @@ int sum_recursive(std::vector<int> v){
 
 
     // Add your implementation here
+    std::size_t s = v.size();
+    int sum;
+
+    if (s == 0) {
+        sum = 0;
+    } else {
+        int last = v.at(s - 1);
+        v.pop_back();
+        sum = last + sum_recursive(v);
+    }
+    return sum;
 }
 
 // Do not modify rest of the code, or the automated testing won't work.
