@@ -29,12 +29,26 @@ std::vector<std::string> split(const std::string& s, const char delimiter, bool 
     return result;
 }
 
+void print( std::map<std::string, std::vector<std::string>> datastructure,
+           std::string id , int dotcount ) {
+    std::string dots;
+    for (int i = 0 ; i < dotcount ; ++i ) {
+        dots += "..";
+    }
+    std::cout << dots << id << std::endl;
+    if ( datastructure.find(id) != datastructure.end() ) {
+        for ( std::string name : datastructure.at(id) ) {
+            print(datastructure, name, dotcount + 1 );
+        }
+    }
+}
+
 
 
 int main()
 {
     // TODO: Implement the datastructure here
-    std::map<std::string, std::set<std::string>> datastructure;
+    std::map<std::string, std::vector<std::string>> datastructure;
 
     while(true){
         std::string line;
@@ -53,11 +67,10 @@ int main()
 
             // TODO: Implement the command here!
             if (datastructure.find(id1) == datastructure.end() ) {
-                std::set<std::string> friends;
+                std::vector<std::string> friends;
                 datastructure.insert({id1, friends});
             }
-
-            datastructure.at(id1).insert(id2);
+            datastructure.at(id1).push_back(id2);
 
         } else if(command == "P" or command == "p"){
             if(parts.size() != 2){
@@ -66,6 +79,7 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            print(datastructure, id, 0);
 
         } else if(command == "C" or command == "c"){
             if(parts.size() != 2){
