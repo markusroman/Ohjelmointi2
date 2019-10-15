@@ -43,7 +43,29 @@ void print( std::map<std::string, std::vector<std::string>> datastructure,
     }
 }
 
+int countSize( std::map<std::string, std::vector<std::string>> datastructure,
+           std::string id , int sizecount = 0 ) {
+    if ( datastructure.find(id) != datastructure.end() ) {
+        for ( std::string name : datastructure.at(id) ) {
+            sizecount = countSize(datastructure, name, sizecount + 1 );
+        }
+        return sizecount;
+    }
 
+    return sizecount;
+}
+
+int countDepth( std::map<std::string, std::vector<std::string>> datastructure,
+             std::string id , int depthcount = 1 ) {
+    if ( datastructure.find(id) != datastructure.end() ) {
+        ++depthcount;
+        for ( std::string name : datastructure.at(id) ) {
+            countDepth(datastructure, name, depthcount);
+        }
+    }
+
+    return depthcount;
+}
 
 int main()
 {
@@ -88,6 +110,7 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            std::cout << countSize(datastructure, id) << std::endl;
 
         } else if(command == "D" or command == "d"){
             if(parts.size() != 2){
@@ -96,6 +119,7 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            std::cout << countDepth(datastructure, id) << std::endl;
 
         } else if(command == "Q" or command == "q"){
            return EXIT_SUCCESS;
