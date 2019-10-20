@@ -61,8 +61,12 @@ int countDepth( std::map<std::string, std::vector<std::string>> datastructure,
         if ( datastructure.at(id).size() != 0 ) {
             ++depthcount;
         }
+        
         for ( std::string name : datastructure.at(id) ) {
-            depthcount += countDepth(datastructure, name);
+            int tmpdepth = countDepth(datastructure, name);
+            if (tmpdepth > depthcount) {
+                depthcount += tmpdepth;
+            } else
         }
     }
 
