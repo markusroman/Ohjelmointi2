@@ -244,6 +244,9 @@ void removeStation( map<string,vector<string>>& datastructure,
 
 int main()
 {
+    // Tulostetaan Rasse
+    printRasse();
+
     // Alustetaan tietorakenne map <linja, vector <pysäkki>>
     map<string,vector<string>> datastructure;
 
@@ -252,8 +255,6 @@ int main()
     if ( ! readFile(datastructure) ) {
         return EXIT_FAILURE;
     }
-    printRasse();
-
     // Käyttöliittymä
     for ( ;; ) {
         cout << "tramway> ";
@@ -261,6 +262,7 @@ int main()
         getline(cin, input);
         vector<string> input_parts = split(input, ' ', true);
         string command = input_parts.at(0);
+        transform(command.begin(), command.end(), command.begin(), ::toupper);
 
         if ( command == "QUIT" ) {
             return EXIT_SUCCESS;
