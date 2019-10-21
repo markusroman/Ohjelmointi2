@@ -61,6 +61,7 @@ bool readFile( map<string, vector<string>>& datastructure ) {
         vector<string> row_parts = split(row, ';', true);
         if ( row_parts.size() != 2 ) {
             cout << "Error: Invalid format in file." << endl;
+            input_file.close();
             return false;
         }
         string line = row_parts.at(0);
@@ -73,6 +74,8 @@ bool readFile( map<string, vector<string>>& datastructure ) {
             datastructure.at(line).push_back(station);
         } else {
             cout << "Error: Station/line already exists." << endl;
+            input_file.close();
+            return false;
         }
     }
     input_file.close();
@@ -131,7 +134,7 @@ void printStation( const map<string,vector<string>>& datastructure,
     }
 }
 
-// Funktio yhdistää käyttöliittymässä annetut syötteet
+// Funktio yhdistää käyttöliittymässä annetut syötteet (komentoa lukuunottamatta)
 // kokonaisiksi merkkijonoiksi ja palauttaa ne vectorina.
 vector<string> combineInput ( const vector<string>& string_parts ) {
     string line_or_station = string_parts.at(1);
@@ -157,12 +160,14 @@ vector<string> combineInput ( const vector<string>& string_parts ) {
     return input_vec;
 }
 
+// Funktio lisää pysäkin tiettyyn kohtaan vectoria
+// ja palauttaa yhtä alkiota pidemmän vektorin.
 vector<string> addStation ( const vector<string>& station_vec,
                             const string station_to_add,
                             const string station_after_new ) {
     vector<string> help_vec = station_vec;
     help_vec.push_back("");
-    int station_id = 0;
+    size_t station_id = 0;
     for ( size_t i = 0 ; i < station_vec.size() ; ++i ) {
         if ( station_vec.at(i) == station_after_new ) {
             station_id = i;
@@ -175,6 +180,8 @@ vector<string> addStation ( const vector<string>& station_vec,
     return help_vec;
 }
 
+// Funktio suorittaa lisättävälle pysäkille virheentarkastelun
+// ja kutsuu lisäysfumktiota, jos annetut syötteet ovat kelvollisia.
 void checkStation ( map<string,vector<string>>& datastructure,
                     const vector<string>& combined_parts ) {
     // ADDSTATION linja pysäkki (seuraava_pysäkki)
@@ -187,7 +194,6 @@ void checkStation ( map<string,vector<string>>& datastructure,
     string station_after_new = "";
     bool station_found = false;
     if ( combined_parts.size() == 3 ) {
-
         station_after_new = combined_parts.at(2);
         for ( string station_name : datastructure.at(line) ) {
             if ( station_after_new == station_name ) {
@@ -214,6 +220,28 @@ void checkStation ( map<string,vector<string>>& datastructure,
         cout << "Station was added." << endl;
 }
 
+// Funktio poistaa halutun pysäkin koko tietorakenteesta
+void removeStation( map<string,vector<string>>& datastructure,
+                    const string station_to_remove ) {
+    bool remove_successful = false;
+    for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
+        string line = line_stations_pair.first;
+        size_t station_id = 0;
+        for ( string station : line_stations_pair.second ) {
+            if ( station == station_to_remove ) {
+                datastructure.at(line).erase(datastructure.at(line).begin() + station_id);
+                remove_successful = true;
+            }
+            ++station_id;
+        }
+    }
+    if ( remove_successful ) {
+        cout << "Station was removed from all lines." << endl;
+    } else {
+        cout << "Error: Station could not be found." << endl;
+    }
+}
+
 int main()
 {
     // Alustetaan tietorakenne map <linja, vector <pysäkki>>
@@ -227,7 +255,6 @@ int main()
     printRasse();
 
     // Käyttöliittymä
-
     for ( ;; ) {
         cout << "tramway> ";
         string input;
@@ -291,6 +318,12 @@ int main()
             checkStation(datastructure, combined_input);
 
         } else if ( command == "REMOVE" ) {
+            if ( input_parts.size() < 2 ) {
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+            vector<string> combined_input = combineInput(input_parts);
+            removeStation(datastructure, combined_input.at(0));
 
         } else {
             cout << "Error: Invalid input." << endl;
