@@ -125,6 +125,29 @@ void printStation( map<string,vector<string>>& datastructure, string station ) {
     }
 }
 
+vector<string> combineInput ( vector<string>& string_parts ) {
+    string line_or_station = string_parts.at(1);
+    vector<string> input_vec;
+    if ( string_parts.size() > 2 ) {
+        size_t i = 1;
+        while ( i < string_parts.size() ) {
+            string current_string = string_parts.at(i);
+            if (current_string.at(0) == '"') {
+                line_or_station = current_string + " " + string_parts.at(i + 1);
+                line_or_station = line_or_station.substr(1, line_or_station.length() - 2);
+                input_vec.push_back(line_or_station);
+                ++i;
+            } else {
+                input_vec.push_back(line_or_station);
+            }
+            ++i;
+        }
+    } else {
+        input_vec.push_back(line_or_station);
+    }
+    return input_vec;
+}
+
 int main()
 {
     // Alustetaan tietorakenne map <linja, vector <pysäkki>>
@@ -135,7 +158,6 @@ int main()
     if ( ! readFile(datastructure) ) {
         return EXIT_FAILURE;
     }
-
     printRasse();
 
     // Käyttöliittymä
@@ -146,8 +168,10 @@ int main()
         getline(cin, input);
         vector<string> input_parts = split(input, ' ', true);
         string command = input_parts.at(0);
+
         if ( command == "QUIT" ) {
             return EXIT_SUCCESS;
+
         } else if ( command == "LINES" ) {
             cout << "All tramlines in alphabetical order:" << endl;
             for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
@@ -159,14 +183,8 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            string line = input_parts.at(1);
-            if ( input_parts.size() > 2 ) {
-                for ( size_t i = 2 ; i < input_parts.size() ; ++i ) {
-                    line += (" " + input_parts.at(i));
-                }
-                line = line.substr(1, line.length() - 2);
-            }
-            printLine(datastructure, line);
+            vector<string> lines = combineInput(input_parts);
+            printLine(datastructure, lines.at(0));
 
         } else if ( command == "STATIONS" ) {
             cout << "All stations in alphabetical order:" << endl;
@@ -185,16 +203,22 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            string station = input_parts.at(1);
-            if ( input_parts.size() > 2 ) {
-                for ( size_t i = 2 ; i < input_parts.size() ; ++i ) {
-                    station += (" " + input_parts.at(i));
-                }
-                station = station.substr(1, station.length() - 2);
-            }
-            printStation(datastructure, station);
+            vector<string> stations = combineInput(input_parts);
+            printStation(datastructure, stations.at(0));
 
         } else if ( command == "ADDLINE" ) {
+            if ( input_parts.size() < 2 ) {
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+            vector<string> lines = combineInput(input_parts);
+            if ( datastructure.find(lines.at(0)) == datastructure.end() ) {
+                vector<string> stations;
+                datastructure.insert({lines.at(0), stations});
+                cout << "Line was added." << endl;
+            } else {
+                cout << "Error: Station/line already exists." << endl;
+            }
 
         } else if ( command == "ADDSTATION" ) {
 

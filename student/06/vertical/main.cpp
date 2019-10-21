@@ -13,7 +13,8 @@ void print_vertical(unsigned int num)
 
 
     // Add your implementation here
-            if ( num / 10 > 0 ) {
+
+    if ( num / 10 > 0 ) {
         print_vertical( num / 10 );
     }
 
