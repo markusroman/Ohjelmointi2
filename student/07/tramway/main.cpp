@@ -21,8 +21,10 @@
 
 using namespace std;
 
-
-vector<string> split(const string& s, const char delimiter, bool ignore_empty = false){
+// Funktio jakaa komennot osiin ja palauttaa
+// osat vectoriin lisättyinä merkkijonoina.
+vector<string> split(const string& s, const char delimiter,
+                     bool ignore_empty = false){
     vector<string> result;
     string tmp = s;
 
@@ -41,7 +43,9 @@ vector<string> split(const string& s, const char delimiter, bool ignore_empty = 
     }
     return result;
 }
-// Tiedoston luku
+
+// Funktio lukee tiedostosta reitti-pysäkki -pareja ja lisää ne
+// tietorakenteeseen. Paluuarvona on totuusarvo tiedostonluvun onnistumisesta.
 bool readFile( map<string, vector<string>>& datastructure ) {
 
     cout << "Give a name for input file: ";
@@ -91,9 +95,9 @@ void printRasse()
                  "-------------------------------" << endl;
 }
 
-// Short and sweet main.
-
-void printLine(map<string,vector<string>>& datastructure, string line) {
+// Funktio tulostaa tietyn reitin pysäkit lisäysjärjestyksessä.
+void printLine( const map<string,vector<string>>& datastructure,
+                const string line) {
     if ( datastructure.find(line) == datastructure.end() ) {
         cout << "Error: Line could not be found." << endl;
         return;
@@ -106,7 +110,9 @@ void printLine(map<string,vector<string>>& datastructure, string line) {
     }
 }
 
-void printStation( map<string,vector<string>>& datastructure, string station ) {
+// Funktio tulostaa tietyn pysäkin sisältävät reitit aakkosjärjestyksessä.
+void printStation( const map<string,vector<string>>& datastructure,
+                   const string station ) {
     set<string> lines;
     for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
         for ( string station_name : line_stations_pair.second ) {
@@ -125,7 +131,9 @@ void printStation( map<string,vector<string>>& datastructure, string station ) {
     }
 }
 
-vector<string> combineInput ( vector<string>& string_parts ) {
+// Funktio yhdistää käyttöliittymässä annetut syötteet
+// kokonaisiksi merkkijonoiksi ja palauttaa ne vectorina.
+vector<string> combineInput ( const vector<string>& string_parts ) {
     string line_or_station = string_parts.at(1);
     vector<string> input_vec;
     if ( string_parts.size() > 2 ) {
@@ -134,11 +142,12 @@ vector<string> combineInput ( vector<string>& string_parts ) {
             string current_string = string_parts.at(i);
             if (current_string.at(0) == '"') {
                 line_or_station = current_string + " " + string_parts.at(i + 1);
-                line_or_station = line_or_station.substr(1, line_or_station.length() - 2);
+                line_or_station = line_or_station.substr(
+                            1, line_or_station.length() - 2);
                 input_vec.push_back(line_or_station);
                 ++i;
             } else {
-                input_vec.push_back(line_or_station);
+                input_vec.push_back(string_parts.at(i));
             }
             ++i;
         }
@@ -146,6 +155,63 @@ vector<string> combineInput ( vector<string>& string_parts ) {
         input_vec.push_back(line_or_station);
     }
     return input_vec;
+}
+
+vector<string> addStation ( const vector<string>& station_vec,
+                            const string station_to_add,
+                            const string station_after_new ) {
+    vector<string> help_vec = station_vec;
+    help_vec.push_back("");
+    int station_id = 0;
+    for ( size_t i = 0 ; i < station_vec.size() ; ++i ) {
+        if ( station_vec.at(i) == station_after_new ) {
+            station_id = i;
+        }
+    }
+    help_vec.at(station_id) = station_to_add;
+    for ( size_t i = station_id ; i < station_vec.size() ; ++i ) {
+        help_vec.at(i + 1) = station_vec.at(i);
+    }
+    return help_vec;
+}
+
+void checkStation ( map<string,vector<string>>& datastructure,
+                    const vector<string>& combined_parts ) {
+    // ADDSTATION linja pysäkki (seuraava_pysäkki)
+    if ( combined_parts.size() < 2 ) {
+        cout << "Error: Invalid input." << endl;
+        return;
+    }
+    string line = combined_parts.at(0);
+    string station_to_add = combined_parts.at(1);
+    string station_after_new = "";
+    bool station_found = false;
+    if ( combined_parts.size() == 3 ) {
+
+        station_after_new = combined_parts.at(2);
+        for ( string station_name : datastructure.at(line) ) {
+            if ( station_after_new == station_name ) {
+                station_found = true;
+            }
+        }
+    }
+    if ( datastructure.find(line) == datastructure.end() ) {
+        cout << "Error: Line could not be found." << endl;
+        return;
+    }
+    for ( string station_name : datastructure.at(line) ) {
+        if ( station_to_add == station_name ) {
+            cout << "Error: Station/line already exists." << endl;
+            return;
+        }
+    }
+    if ( station_found ) {
+        vector<string> station_vec = datastructure.at(line);
+        datastructure.at(line) = addStation(station_vec, station_to_add, station_after_new);
+    } else {
+        datastructure.at(line).push_back(station_to_add);
+    }
+        cout << "Station was added." << endl;
 }
 
 int main()
@@ -221,6 +287,8 @@ int main()
             }
 
         } else if ( command == "ADDSTATION" ) {
+            vector<string> combined_input = combineInput(input_parts);
+            checkStation(datastructure, combined_input);
 
         } else if ( command == "REMOVE" ) {
 
