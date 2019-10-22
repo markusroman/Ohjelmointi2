@@ -21,8 +21,8 @@
 
 using namespace std;
 
-// Funktio jakaa komennot osiin ja palauttaa
-// osat vectoriin lisättyinä merkkijonoina.
+// Funktio jakaa komennot osiin ja palauttaa osat vectoriin lisättyinä
+// merkkijonoina. Suoraan edellisen kierroksen koodipohjasta otettu funktio.
 vector<string> split(const string& s, const char delimiter,
                      bool ignore_empty = false){
     vector<string> result;
@@ -48,36 +48,50 @@ vector<string> split(const string& s, const char delimiter,
 // tietorakenteeseen. Paluuarvona on totuusarvo tiedostonluvun onnistumisesta.
 bool readFile( map<string, vector<string>>& datastructure ) {
 
+    // Pyydetään käyttäjältä tiedoston nimi ja yritetään avata se luettavaksi.
     cout << "Give a name for input file: ";
     string input_file_name;
     getline(cin, input_file_name);
     ifstream input_file(input_file_name);
+    // Jos tiedosto ei aukea, funktion suoritus lopetetaan.
     if ( ! input_file ) {
         cout << "Error: File could not be read." << endl;
         return false;
     }
+    // alustetaan rivimuuttuja ja käydään tiedostoa läpi rivi kerrallaan.
     string row = "";
     while ( getline(input_file, row) ) {
+        // Jaetaan luettu rivi osiin ja tarkastetaan,
+        // että se on oikeassa muodossa. Jos muoto on virheellinen,
+        // tiedosto suljetaan ja funktion suoritus lopetetaan.
         vector<string> row_parts = split(row, ';', true);
         if ( row_parts.size() != 2 ) {
             cout << "Error: Invalid format in file." << endl;
             input_file.close();
             return false;
         }
+        // Tallennetaan tiedostosta luetut tiedot ja tarkastetaan löytyvätkö
+        // ne jo tietorakenteesta.
         string line = row_parts.at(0);
         string station = row_parts.at(1);
+        // Jos reittiä ei löydy, se lisätään tietorakenteeseen.
         if ( datastructure.find(line) == datastructure.end() ) {
             vector<string> stations = { station };
             datastructure.insert({line, stations});
-        } else if ( find(datastructure.at(line).begin(), datastructure.at(line).end(),
+        // Muuten jos reitiltä ei löydy annettua asemaa, sellainen lisätään.
+        } else if ( find(datastructure.at(line).begin(),
+                         datastructure.at(line).end(),
                          station) == datastructure.at(line).end() ) {
             datastructure.at(line).push_back(station);
+        // Muuten tiedosto suljetaan ja funktion suoritus lopetetaan.
         } else {
             cout << "Error: Station/line already exists." << endl;
             input_file.close();
             return false;
         }
     }
+    // Jos tiedosto saadaan luettua virheettä, tiedosto suljetaan
+    // ja pääohjelman suoritus jatkuu.
     input_file.close();
     return true;
 }
@@ -98,7 +112,8 @@ void printRasse()
                  "-------------------------------" << endl;
 }
 
-// Funktio tulostaa tietyn reitin pysäkit lisäysjärjestyksessä.
+// Funktio ottaa parametrinaan tietorakenteen ja annetun reitin. Tämän
+// jälkeen se tulostaa reitin pysäkit lisäysjärjestyksessä.
 void printLine( const map<string,vector<string>>& datastructure,
                 const string line) {
     if ( datastructure.find(line) == datastructure.end() ) {
@@ -113,10 +128,14 @@ void printLine( const map<string,vector<string>>& datastructure,
     }
 }
 
-// Funktio tulostaa tietyn pysäkin sisältävät reitit aakkosjärjestyksessä.
+// Funktio ottaa parametrinaan tietorakenteen ja annetun pysäkin. Tämän jälkeen
+// se tulostaa aakkosjärjestyksessä kaikki reitit jotka sisältävät aseman.
 void printStation( const map<string,vector<string>>& datastructure,
                    const string station ) {
+    // Käytetään set-rakennetta, koska sen alkiot ovat aina aakkosjärjestyksessä.
     set<string> lines;
+    // Käydään kaikkien reittien kaikki asemat läpi ja, jos asema löytyy,
+    // senhetkinen reitti lisätään tulostettavaksi.
     for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
         for ( string station_name : line_stations_pair.second ) {
             if ( station == station_name ) {
@@ -124,6 +143,8 @@ void printStation( const map<string,vector<string>>& datastructure,
             }
         }
     }
+    // Virhetarkastelun jälkeen set-rakenne käydään läpi ja sen kaikki
+    // alkiot tulostetaan.
     if ( lines.size() == 0 ) {
         cout << "Error: Station could not be found." << endl;
         return;
@@ -140,9 +161,13 @@ vector<string> combineInput ( const vector<string>& string_parts ) {
     string line_or_station = string_parts.at(1);
     vector<string> input_vec;
     if ( string_parts.size() > 2 ) {
+        // Alustetaan muuttuja 1:ksi, jotta komento jää käsittelemättä.
         size_t i = 1;
         while ( i < string_parts.size() ) {
             string current_string = string_parts.at(i);
+            // Jos osa alkaa lainausmerkillä, nykyinen ja seuraava osa
+            // yhdistetään ja lisätään vectoriin. Myös i:tä lisätään yhdellä.
+            // (käytännössä hypätään seuraavan osan yli)
             if (current_string.at(0) == '"') {
                 line_or_station = current_string + " " + string_parts.at(i + 1);
                 line_or_station = line_or_station.substr(
@@ -150,48 +175,73 @@ vector<string> combineInput ( const vector<string>& string_parts ) {
                 input_vec.push_back(line_or_station);
                 ++i;
             } else {
+                // Lisätään osa sellaisenaan vectoriin.
                 input_vec.push_back(string_parts.at(i));
             }
+            // Siirrytään seuraavaan osaan
             ++i;
         }
     } else {
+        // Jos annettujen osien pituus on 2 tai vähemmän
         input_vec.push_back(line_or_station);
     }
     return input_vec;
 }
 
-// Funktio lisää pysäkin tiettyyn kohtaan vectoria
-// ja palauttaa yhtä alkiota pidemmän vektorin.
+/*
+ * Funktio lisää pysäkin tiettyyn kohtaan vectoria ja palauttaa yhtä alkiota
+ * pidemmän vektorin. Parametreina on tietyn linjan pysäkkivectori, lisättävä
+ * pysäkki ja pysäkki jonka eteen uusi pysäkki lisätään. Paluuarvona on
+ * pysäkkivectori, joka sisältää lisätyn pysäkin.
+*/
 vector<string> addStation ( const vector<string>& station_vec,
                             const string station_to_add,
                             const string station_after_new ) {
-    vector<string> help_vec = station_vec;
-    help_vec.push_back("");
+    // Uusi vectori alustetaan annetuksi vectoriksi ja sen kokoa lisätään yhdellä.
+    vector<string> new_vec = station_vec;
+    new_vec.push_back("");
     size_t station_id = 0;
+    // Jos etsitty pysäkki löytyy, sen sijainti otetaan talteen.
     for ( size_t i = 0 ; i < station_vec.size() ; ++i ) {
         if ( station_vec.at(i) == station_after_new ) {
             station_id = i;
         }
     }
-    help_vec.at(station_id) = station_to_add;
+    // Löydettyä sijaintia käytetään uuden pysäkin sijoittamiseen.
+    new_vec.at(station_id) = station_to_add;
+    // Lopuksi alkuperäisen pysäkkivectorin alkiot lisätään uuteen
+    // vectoriin yhtä isommalla indeksillä.
     for ( size_t i = station_id ; i < station_vec.size() ; ++i ) {
-        help_vec.at(i + 1) = station_vec.at(i);
+        new_vec.at(i + 1) = station_vec.at(i);
     }
-    return help_vec;
+    return new_vec;
 }
 
 // Funktio suorittaa lisättävälle pysäkille virheentarkastelun
-// ja kutsuu lisäysfumktiota, jos annetut syötteet ovat kelvollisia.
+// ja kutsuu lisäysfunktiota, jos annetut syötteet ovat kelvollisia.
+// Parametrina on tietorakenne ja syötteenä annetut osat.
 void checkStation ( map<string,vector<string>>& datastructure,
                     const vector<string>& combined_parts ) {
-    // ADDSTATION linja pysäkki (seuraava_pysäkki)
+    // Suoritetaan virhetarkastelut annetuille syötteille.
     if ( combined_parts.size() < 2 ) {
         cout << "Error: Invalid input." << endl;
         return;
     }
     string line = combined_parts.at(0);
+    if ( datastructure.find(line) == datastructure.end() ) {
+        cout << "Error: Line could not be found." << endl;
+        return;
+    }
     string station_to_add = combined_parts.at(1);
+    for ( string station_name : datastructure.at(line) ) {
+        if ( station_to_add == station_name ) {
+            cout << "Error: Station/line already exists." << endl;
+            return;
+        }
+    }
     string station_after_new = "";
+    // Jos syötteenä on annettu 2 pysäkin nimeä, tarkastetaan löytyykö
+    // pysäkkiä, jonka eteen uusi pysäkki lisätään, annetulta reitiltä.
     bool station_found = false;
     if ( combined_parts.size() == 3 ) {
         station_after_new = combined_parts.at(2);
@@ -201,40 +251,38 @@ void checkStation ( map<string,vector<string>>& datastructure,
             }
         }
     }
-    if ( datastructure.find(line) == datastructure.end() ) {
-        cout << "Error: Line could not be found." << endl;
-        return;
-    }
-    for ( string station_name : datastructure.at(line) ) {
-        if ( station_to_add == station_name ) {
-            cout << "Error: Station/line already exists." << endl;
-            return;
-        }
-    }
+    // Pysäkki lisätään
+    cout << "Station was added." << endl;
     if ( station_found ) {
         vector<string> station_vec = datastructure.at(line);
         datastructure.at(line) = addStation(station_vec, station_to_add, station_after_new);
     } else {
         datastructure.at(line).push_back(station_to_add);
     }
-        cout << "Station was added." << endl;
 }
 
-// Funktio poistaa halutun pysäkin koko tietorakenteesta
+// Funktio poistaa halutun pysäkin koko tietorakenteesta. Parametreina on
+// tietorakenne ja poistettavan pysäkin nimi.
 void removeStation( map<string,vector<string>>& datastructure,
                     const string station_to_remove ) {
     bool remove_successful = false;
+    // Käydään läpi kaikkien reittien pysäkkivectorit ja
+    // etsitään annettua pysäkkiä.
     for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
         string line = line_stations_pair.first;
         size_t station_id = 0;
         for ( string station : line_stations_pair.second ) {
+            // Jos pysäkki löytyy, käytetään pysäkkivectorille
+            // erase-metodia ja muutetaan löytömuuttujan totuusarvoa.
             if ( station == station_to_remove ) {
-                datastructure.at(line).erase(datastructure.at(line).begin() + station_id);
+                datastructure.at(line).erase(datastructure.at(line).begin()
+                                             + station_id);
                 remove_successful = true;
             }
             ++station_id;
         }
     }
+    // Tuloste riippuu siitä löydettiinkö asema joltakin reitiltä.
     if ( remove_successful ) {
         cout << "Station was removed from all lines." << endl;
     } else {
@@ -257,6 +305,8 @@ int main()
     }
     // Käyttöliittymä
     for ( ;; ) {
+        // Kerätään käyttäjältä syöte, jaetaan se osiin ja muutetaan
+        // ensimmäinen osa tikkukirjaimiseksi komennoksi.
         cout << "tramway> ";
         string input;
         getline(cin, input);
@@ -268,12 +318,17 @@ int main()
             return EXIT_SUCCESS;
 
         } else if ( command == "LINES" ) {
+            // Tulostetaan kaikki tietorakenteesta löytyvät linjat
+            // aakkosjärjestyksessä. Map-rakenne pitää alkiot valmiiksi
+            // oikeassa järjestyksessä, joten tämä ei vaadi lisätoimenpiteitä.
             cout << "All tramlines in alphabetical order:" << endl;
             for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
                 cout << line_stations_pair.first << endl;
             }
 
         } else if ( command == "LINE" ) {
+            // Tarkistetaan, että syötteitä on tarpeeksi ja kutsutaan
+            // reitintulostusfunktiota.
             if ( input_parts.size() < 2 ) {
                 cout << "Error: Invalid input." << endl;
                 continue;
@@ -282,6 +337,9 @@ int main()
             printLine(datastructure, lines.at(0));
 
         } else if ( command == "STATIONS" ) {
+            // Käy kaikkien linjojen asemat läpi ja lisää ne set-rakenteeseen.
+            // Set pitää huolen siitä, että alkiot ovat aakkosjärjestyksessä
+            // ja niitä esiintyy vain kerran.
             cout << "All stations in alphabetical order:" << endl;
             set<string> all_stations;
             for ( pair<string,vector<string>> line_stations_pair : datastructure ) {
@@ -294,6 +352,8 @@ int main()
             }
 
         } else if ( command == "STATION" ) {
+            // Tarkistetaan, että syötteitä on tarpeeksi ja kutsutaan
+            // pysäkintulostusfunktiota.
             if ( input_parts.size() < 2 ) {
                 cout << "Error: Invalid input." << endl;
                 continue;
@@ -302,6 +362,9 @@ int main()
             printStation(datastructure, stations.at(0));
 
         } else if ( command == "ADDLINE" ) {
+            // Tarkistetaan, että syötteitä on tarpeeksi ja lisätään reitti
+            // ilman pysäkkejä tietorakenteeseen, mikäli samannimistä
+            // reittiä ei ole jo olemassa.
             if ( input_parts.size() < 2 ) {
                 cout << "Error: Invalid input." << endl;
                 continue;
@@ -316,10 +379,15 @@ int main()
             }
 
         } else if ( command == "ADDSTATION" ) {
+            // Kutsutaan asemantarkastusfunktiota, joka suorittaa
+            // virhetarkastelun ja kutsuu lisäysfunktiota, jos syötteet
+            // ovat kelvollisia.
             vector<string> combined_input = combineInput(input_parts);
             checkStation(datastructure, combined_input);
 
         } else if ( command == "REMOVE" ) {
+            // Tarkistetaan, että syötteitä on tarpeeksi ja kutsutaan
+            // pysäkinpoistofunktiota.
             if ( input_parts.size() < 2 ) {
                 cout << "Error: Invalid input." << endl;
                 continue;
@@ -328,6 +396,7 @@ int main()
             removeStation(datastructure, combined_input.at(0));
 
         } else {
+            // Tuntematon syöte. Ohjelma kysyy uutta syötettä.
             cout << "Error: Invalid input." << endl;
         }
     }
