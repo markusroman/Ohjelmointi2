@@ -7,23 +7,22 @@
 class Cards {
 
     public:
-      // Dynaamisella rakenteella on oltava rakentaja,
-      // joka alustaa paallimmainen-osoittimen nullptr:ksi.
+      // A dynamic structure must have a constructor that initializes
+      // the top elem as nullptr.
       Cards();
 
-      // Lisää uuden kortin annetulla id:llä pinon päällimmäiseksi.
+      // Adds a new card with the given id as the topmost element.
       void add(int id);
 
-      // Tulostaa tietorakenteen sisällön järjestysnumeroituna
-      // parametrina annettuun tietovirtaan aloittaen ensimmäisestä alkiosta.
+      // Prints the content of the data structure with ordinal numbers to the
+      // output stream given as a parameter starting from the first element.
       void print(std::ostream& s);
 
-      // Poistaa pinon päällimmäisen kortin ja palauttaa
-      // sen viiteparametrissa luku. Paluuarvo true
-      // jos onnistuu, false jos pino oli tyhjä.
+      // Removes the topmost card and returns it as reference parameter number.
+      // Returns false, if the data structure is empty, otherwise returns true.
       bool remove(int& id);
 
-      // Kääntää tietorakenteen sisällön päinvastaiseksi.
+      // Reverses the content of the data structure as opposite.
       void reverse();
 
     private:

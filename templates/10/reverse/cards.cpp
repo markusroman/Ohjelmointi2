@@ -24,7 +24,7 @@ void Cards::print(std::ostream& s) {
    }
 }
 
-// Älä kirjoita metodien remove ja reverse stubeja tähän itse, 
-// vaan avaa tiedosto cards.hh ja klikkaa metodin esittelyä 
-// hiiren oikeanpuoleisella näppäimellä ja valitse toiminto 
-// Refactor > Add definition in cards.cpp
+// Do not write the stubs of the methods remove and reverse by yourself here,
+// but open the file reverse.hh and click the declaration of the method
+// by the right mouse button and select
+// Refactor > Add definition in reverse.cpp
