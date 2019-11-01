@@ -62,7 +62,7 @@ bool Cards::top_to_bottom() {
     current_ptr->next = top_card;
     return true;
 }
-
+/*
 void Cards::recursive_print(Card_data* top, std::ostream& s, int count) const {
     if ( count > 0 ) {
         recursive_print(top->next, s, count - 1);
@@ -79,7 +79,7 @@ void Cards::print_from_bottom_to_top(std::ostream& s) const {
     }
     recursive_print(top_, s, count);
 }
-
+*/
 
 Cards::~Cards() {
     Card_data* current_ptr = top_;
