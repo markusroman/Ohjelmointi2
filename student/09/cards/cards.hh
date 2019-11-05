@@ -29,7 +29,7 @@ class Cards {
 
       // Prints the content of the data structure with ordinal numbers
       // to the output stream given as a parameter starting from the last element.
-      //void print_from_bottom_to_top(std::ostream& s) const;
+      void print_from_bottom_to_top(std::ostream& s) const;
 
       // Dynamic data structure must have a destructor
       // that can be called to deallocate memory,
@@ -40,13 +40,11 @@ class Cards {
       struct Card_data {
         int data;
         Card_data* next;
+        Card_data* previous;
       };
 
       Card_data* top_;
-
-      // You can use the function below in the implementation of
-      // method print_from_bottom_to_top.
-      //void recursive_print(Card_data* top, std::ostream& s, int count) const;
+      Card_data* bottom_;
 };
 
 #endif // CARDS_HH

@@ -2,24 +2,32 @@
 
 // TODO: Implement the methods here
 Cards::Cards():
-    top_(nullptr) {
+    top_(nullptr),
+    bottom_(nullptr) {
 }
 
 void Cards::add(int id) {
     Card_data* new_card = nullptr;
     new_card = new struct Card_data;
     new_card->data = id;
-    if ( top_ != nullptr ) {
+    if ( id == 0 ) {
+        new_card->next = nullptr;
+        new_card->previous = nullptr;
+        top_ = new_card;
+        bottom_ = new_card;
+    } else {
         new_card->next = top_;
+        new_card->previous = nullptr;
+        top_ = new_card;
+        new_card->next->previous = top_;
     }
-    top_ = new_card;
 }
 
 void Cards::print_from_top_to_bottom(std::ostream& s) const {
     Card_data* current_ptr = top_;
     int card_nmbr = 1;
     while ( current_ptr != nullptr ) {
-        s << card_nmbr << ": " << current_ptr->data << std::endl;
+        s << card_nmbr << ": " << current_ptr->data << "\n";
         current_ptr = current_ptr->next;
         ++card_nmbr;
     }
@@ -39,47 +47,38 @@ bool Cards::remove(int& id) {
 }
 
 bool Cards::bottom_to_top() {
-    Card_data* bottom_card = top_;
-    Card_data* second_last_card = top_;
-    while ( second_last_card->next->next != nullptr ) {
-        second_last_card = second_last_card->next;
-    }
-    bottom_card = second_last_card->next;
+    Card_data* bottom_card = bottom_;
+    Card_data* second_last_card = bottom_->previous;
     second_last_card->next = nullptr;
     bottom_card->next = top_;
+    top_->previous = bottom_card;
     top_ = bottom_card;
+    bottom_ = second_last_card;
     return true;
 }
 
 bool Cards::top_to_bottom() {
     Card_data* top_card = top_;
     top_ = top_card->next;
+    top_->previous = nullptr;
     top_card->next = nullptr;
-    Card_data* current_ptr = top_;
-    while ( current_ptr->next != nullptr ) {
-        current_ptr = current_ptr->next;
-    }
-    current_ptr->next = top_card;
+    bottom_->next = top_card;
+    top_card->previous = bottom_;
+    bottom_ = top_card;
     return true;
-}
-/*
-void Cards::recursive_print(Card_data* top, std::ostream& s, int count) const {
-    if ( count > 0 ) {
-        recursive_print(top->next, s, count - 1);
-    }
-    s << count << ": " << top->data << std::endl;
 }
 
 void Cards::print_from_bottom_to_top(std::ostream& s) const {
-    int count = 0;
-    Card_data* current_ptr = top_;
+    Card_data* current_ptr = bottom_;
+    int card_nmbr = 1;
     while ( current_ptr != nullptr ) {
-        current_ptr = current_ptr->next;
-        ++count;
+        s << card_nmbr << ": " << current_ptr->data << "\n";
+        current_ptr = current_ptr->previous;
+        ++card_nmbr;
     }
-    recursive_print(top_, s, count);
+
 }
-*/
+
 
 Cards::~Cards() {
     Card_data* current_ptr = top_;
