@@ -23,14 +23,20 @@ int main() {
     cout << endl << "print_from_top_to_bottom" << endl;
     deck.print_from_top_to_bottom(cout);
 
-    cout << endl << "bottom_to_top * 2" << endl;
+    cout << endl << "bottom_to_top * 6" << endl;
+    deck.bottom_to_top();
+    deck.bottom_to_top();
+    deck.bottom_to_top();
+    deck.bottom_to_top();
     deck.bottom_to_top();
     deck.bottom_to_top();
 
     cout << endl << "print_from_top_to_bottom" << endl;
     deck.print_from_top_to_bottom(cout);
 
-    cout << endl << "top_to_bottom * 1" << endl;
+    cout << endl << "top_to_bottom * 3" << endl;
+    deck.top_to_bottom();
+    deck.top_to_bottom();
     deck.top_to_bottom();
 
     cout << endl << "print_from_top_to_bottom" << endl;
