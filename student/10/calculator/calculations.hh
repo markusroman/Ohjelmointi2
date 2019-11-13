@@ -8,5 +8,7 @@ double addition(double left, double right);
 double subtraction(double left, double right);
 double multiplication(double left, double right);
 double division(double left, double right);
+double power(double left, double right);
+double calculate(double(*f)(double, double), double dub1, double dub2);
 
 #endif

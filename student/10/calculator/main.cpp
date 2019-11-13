@@ -4,6 +4,8 @@
 #include <sstream>  // for implementing function string_to_double
 #include <string>
 #include <vector>
+#include <cctype>
+#include <ctype.h>
 
 using namespace std;
 
@@ -57,9 +59,13 @@ const vector<Command> COMMANDS = {
     {"STOP", 0, true, nullptr},
     {"QUIT", 0, true, nullptr},
     {"EXIT", 0, true, nullptr},
-    {"Q", 0, true, nullptr}
+    {"Q", 0, true, nullptr},
+    {"^", 2, false, power},
+    {"POWER", 2, false, power},
+    {"EXP", 2, false, power}
 };
 
+//double calculate(double(*action)(double, double), double dub1, double dub2);
 
 int main() {
 
@@ -88,7 +94,39 @@ int main() {
         string command_to_be_executed = pieces.at(0);
 
         // TODO: Implement command execution here!
+        for ( size_t i = 0; i < command_to_be_executed.length(); ++i ) {
+            command_to_be_executed.at(i) = toupper(command_to_be_executed.at(i));
+        }
 
+        bool is_com_found = false;
+        bool ex = false;
+        for ( Command com : COMMANDS ) {
+            if ( command_to_be_executed == com.str ) {
+                is_com_found = true;
+                if ( com.parameter_number != pieces.size() - 1 ) {
+                    cout << "Error: wrong number of parameters." << endl;
+                    continue;
+                }
+                if ( com.exit ) {
+                    cout << GREETING_AT_END << endl;
+                    ex = true;
+                    break;
+                }
+                double dub1 = 0.0;
+                double dub2 = 0.0;
+                if ( ! (string_to_double(pieces.at(1), dub1) and string_to_double(pieces.at(2), dub2)) ) {
+                    cout << "Error: a non-number operand." << endl;
+                    continue;
+                }
+                cout << calculate(com.action, dub1, dub2) << endl;
+            }
+        }
+        if ( ex ) {
+            break;
+        }
+        if ( ! is_com_found ) {
+            cout << "Error: unknown command." << endl;
+        }
     }
 }
 
