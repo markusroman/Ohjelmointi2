@@ -24,6 +24,29 @@ void Cards::print(std::ostream& s) {
    }
 }
 
+bool Cards::remove(int &id) {
+    if ( top_ == nullptr ) {
+        return false;
+    }
+    id = top_->data;
+    top_ = top_->next;
+    return true;
+}
+
+void Cards::reverse() {
+    std::shared_ptr<Card_data> old_top = top_;
+    int count = 0;
+    while ( old_top != nullptr ) {
+        add(old_top->data);
+        old_top = old_top->next;
+        if ( count == 0 ) {
+            top_->next = nullptr;
+        }
+        ++count;
+    }
+
+}
+
 // Do not write the stubs of the methods remove and reverse by yourself here,
 // but open the file reverse.hh and click the declaration of the method
 // by the right mouse button and select

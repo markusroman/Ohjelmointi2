@@ -65,7 +65,6 @@ const vector<Command> COMMANDS = {
     {"EXP", 2, false, power}
 };
 
-//double calculate(double(*action)(double, double), double dub1, double dub2);
 
 int main() {
 
