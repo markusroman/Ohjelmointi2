@@ -16,15 +16,17 @@ const int DEFAULT_RENEWAL_AMOUNT = 6;
 class Loan
 {
 public:
-    Loan(const Book* loaned_book,
-         const Person* loaner,
-         const Date* loan_date);
+    Loan(Book* loaned_book,
+         Person* loaner,
+         Date* due_date);
     ~Loan();
+    Person* get_loaner();
+    std::string print_info( Date* today, bool print_borrower );
 
 private:
-    const Book* book_;
-    const Person* loaner_;
-    const Date* loan_date_;
+    Book* book_;
+    Person* loaner_;
+    Date* due_date_;
 };
 
 #endif // LOAN_HH

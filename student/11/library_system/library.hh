@@ -106,6 +106,8 @@ private:
     std::map<std::string, Person*> accounts_;
 
     // Students may add things here and initialize them properly.
+    
+    // All loans in a map.
     std::map<std::string, Loan*> loans_;
 
 };

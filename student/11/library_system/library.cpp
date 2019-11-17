@@ -115,17 +115,43 @@ void Library::advance_date(int days)
 
 void Library::loaned_books()
 {
-
+    if ( loans_.size() == 0 ) {
+        return;
+    }
+    std::cout << LOAN_INFO << std::endl;
+    for ( std::pair<std::string, Loan*> loan : loans_ ) {
+        std::cout << loan.second->print_info(today_, true) << std::endl;
+    }
 }
 
 void Library::loans_by(const std::string &borrower)
 {
-
+    for ( std::pair<std::string, Loan*> loan : loans_ ) {
+        if ( loan.second->get_loaner()->get_name() == borrower ) {
+            std::cout << loan.second->print_info(today_, false) << std::endl;
+        }
+    }
 }
 
 void Library::loan(const std::string &book_title, const std::string &borrower_id)
 {
+    if ( loans_.find(book_title) != loans_.end() ) {
+        std::cout << ALREADY_LOANED_ERROR << std::endl;
+        return;
+    }
+    if ( books_.find(book_title) == books_.end() ) {
+        std::cout << CANT_FIND_BOOK_ERROR << std::endl;
+        return;
+    }
+    if ( accounts_.find(borrower_id) == accounts_.end() ) {
+        std::cout << CANT_FIND_ACCOUNT_ERROR << std::endl;
+        return;
+    }
 
+    Loan* new_loan = new Loan(books_.at(book_title),
+                              accounts_.at(borrower_id),
+                              today_);
+    loans_.insert({book_title, new_loan});
 }
 
 void Library::renew_loan(const std::string &book_title)
