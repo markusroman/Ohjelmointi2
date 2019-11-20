@@ -66,7 +66,10 @@ void Library::all_borrowers_with_info()
     }
 }
 
-bool Library::add_book(const std::string &title, const std::vector<std::string> authors, const std::string &description, const std::set<std::string> genres)
+bool Library::add_book(const std::string &title,
+                       const std::vector<std::string> authors,
+                       const std::string &description,
+                       const std::set<std::string> genres)
 {
     if ( authors.empty() ){
         std::cout << MISSING_AUTHOR_ERROR << std::endl;
@@ -126,6 +129,10 @@ void Library::loaned_books()
 
 void Library::loans_by(const std::string &borrower)
 {
+    if ( accounts_.find(borrower) == accounts_.end() ) {
+        std::cout << CANT_FIND_ACCOUNT_ERROR << std::endl;
+        return;
+    }
     for ( std::pair<std::string, Loan*> loan : loans_ ) {
         if ( loan.second->get_loaner()->get_name() == borrower ) {
             std::cout << loan.second->print_info(today_, false) << std::endl;
@@ -147,19 +154,46 @@ void Library::loan(const std::string &book_title, const std::string &borrower_id
         std::cout << CANT_FIND_ACCOUNT_ERROR << std::endl;
         return;
     }
-
+    Date* loan_due = new Date(today_->getDay(),
+                              today_->getMonth(),
+                              today_->getYear());
+    loan_due->advance_by_loan_length();
     Loan* new_loan = new Loan(books_.at(book_title),
                               accounts_.at(borrower_id),
-                              today_);
+                              loan_due);
     loans_.insert({book_title, new_loan});
 }
 
 void Library::renew_loan(const std::string &book_title)
 {
-
+    if ( books_.find(book_title) == books_.end() ) {
+        std::cout << CANT_FIND_BOOK_ERROR << std::endl;
+        return;
+    }
+    if ( loans_.find(book_title) == loans_.end() ) {
+        std::cout << LOAN_NOT_FOUND_ERROR << std::endl;
+        return;
+    }
+    if ( ! loans_.at(book_title)->renew_loan() ) {
+        std::cout << OUT_OF_RENEWALS_ERROR << std::endl;
+    } else {
+        std::cout << RENEWAL_SUCCESSFUL <<
+                     loans_.at(book_title)->get_due_date() <<
+                     std::endl;
+    }
 }
 
 void Library::return_loan(const std::string &book_title)
 {
-
+    if ( books_.find(book_title) == books_.end() ) {
+        std::cout << CANT_FIND_BOOK_ERROR << std::endl;
+        return;
+    }
+    if ( loans_.find(book_title) == loans_.end() ) {
+        std::cout << LOAN_NOT_FOUND_ERROR << std::endl;
+        return;
+    }
+    delete loans_.at(book_title);
+    loans_.at(book_title) = nullptr;
+    std::cout << RETURN_SUCCESSFUL << std::endl;
 }
