@@ -47,6 +47,8 @@ public:
     bool operator==(Date& rhs) const;
     bool operator<(Date& rhs) const;
 
+    bool isLate(Date* rhs);
+
 private:
     unsigned int day_;
     unsigned int month_;

@@ -195,5 +195,6 @@ void Library::return_loan(const std::string &book_title)
     }
     delete loans_.at(book_title);
     loans_.at(book_title) = nullptr;
+    loans_.erase(book_title);
     std::cout << RETURN_SUCCESSFUL << std::endl;
 }

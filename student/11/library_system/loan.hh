@@ -11,7 +11,7 @@
 #include "book.hh"
 #include "date.hh"
 
-const int DEFAULT_RENEWAL_AMOUNT = 1;
+const int DEFAULT_RENEWAL_AMOUNT = 6;
 
 class Loan
 {

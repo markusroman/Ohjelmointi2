@@ -35,10 +35,10 @@ string Loan::print_info( Date* today, bool print_borrower ) {
         info_to_print += loaner_->get_name();
     }
     info_to_print += " : " + due_date_->to_string();
-    if ( today < due_date_ or today == due_date_ ) {
-        info_to_print += " : 0";
-    } else {
+    if ( due_date_->isLate(today) ) {
         info_to_print += " : 1";
+    } else {
+        info_to_print += " : 0";
     }
     return info_to_print;
 }

@@ -89,6 +89,18 @@ bool Date::operator<(Date &rhs) const
             ( rhs.year_ * 10000 + rhs.month_ * 100 + rhs.day_);
 }
 
+bool Date::isLate(Date* today) {
+    if ( year_ > today->year_ ) {
+        return false;
+    } else if ( month_ > today->month_ ) {
+        return false;
+    } else if ( day_ > today->day_ ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 bool Date::is_leap_year() const
 {
     return (year_ % 4 == 0) && (!(year_ % 100 == 0) || (year_ % 400 == 0));
