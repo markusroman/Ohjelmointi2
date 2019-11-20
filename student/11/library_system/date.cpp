@@ -89,16 +89,10 @@ bool Date::operator<(Date &rhs) const
             ( rhs.year_ * 10000 + rhs.month_ * 100 + rhs.day_);
 }
 
+// The previous function called in a different way
 bool Date::isLate(Date* today) {
-    if ( year_ > today->year_ ) {
-        return false;
-    } else if ( month_ > today->month_ ) {
-        return false;
-    } else if ( day_ > today->day_ ) {
-        return false;
-    } else {
-        return true;
-    }
+    return (year_ * 10000 + month_ * 100 + day_ ) <
+            ( today->year_ * 10000 + today->month_ * 100 + today->day_);
 }
 
 bool Date::is_leap_year() const

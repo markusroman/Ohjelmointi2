@@ -4,10 +4,16 @@
  * Students should expand this system to handle book loaning as well.
  * ---------------
  *
+ * Program author
+ * Name: Markus Röman
+ * Student number: 281954
+ * UserID: romanm
+ * E-Mail: markus.roman@tuni.fi
  *
- * (Add your info ( name, email, student number) and a short
- * description / comment of your solution here.)
  *
+ * Loans are in a map-structure similar to already existing books_, accounts_
+ * and authors_ maps. Loans have a due-date and pointers to books and people which are
+ * used in different methods that make the wanted commands work correctly.
  *
  * ---------------
  * TIE-0220x S2019

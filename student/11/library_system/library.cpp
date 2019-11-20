@@ -116,6 +116,7 @@ void Library::advance_date(int days)
     today_->show();
 }
 
+// Checks if there are no loans and prints the info if at least one exists.
 void Library::loaned_books()
 {
     if ( loans_.size() == 0 ) {
@@ -127,6 +128,7 @@ void Library::loaned_books()
     }
 }
 
+// Checks if the given person exists in the system and prints his/her loans.
 void Library::loans_by(const std::string &borrower)
 {
     if ( accounts_.find(borrower) == accounts_.end() ) {
@@ -140,6 +142,8 @@ void Library::loans_by(const std::string &borrower)
     }
 }
 
+// Checks if given parameter(s) are valid and creates and
+// adds a new loan to the map structure.
 void Library::loan(const std::string &book_title, const std::string &borrower_id)
 {
     if ( loans_.find(book_title) != loans_.end() ) {
@@ -164,6 +168,8 @@ void Library::loan(const std::string &book_title, const std::string &borrower_id
     loans_.insert({book_title, new_loan});
 }
 
+// Checks if given parameter(s) are valid and tries to renew the loan.
+// Then continues to print info accordingly.
 void Library::renew_loan(const std::string &book_title)
 {
     if ( books_.find(book_title) == books_.end() ) {
@@ -183,6 +189,7 @@ void Library::renew_loan(const std::string &book_title)
     }
 }
 
+// Checks parameter(s) and deletes loan from the structure.
 void Library::return_loan(const std::string &book_title)
 {
     if ( books_.find(book_title) == books_.end() ) {

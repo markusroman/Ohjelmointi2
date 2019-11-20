@@ -3,6 +3,7 @@
  * This class and its bahaviour should be defined by the student.
  *
  * TIE-0220x S2019
+ *
  * */
 #ifndef LOAN_HH
 #define LOAN_HH
