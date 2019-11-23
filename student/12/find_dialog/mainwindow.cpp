@@ -28,6 +28,7 @@ QString MainWindow::read_file()
     if ( ! file ) {
         return "File not found";
     } else if ( str_to_search == "" or str_to_search.empty() ) {
+        file.close();
         return "File found";
     }
     std::string row = "";
@@ -37,6 +38,7 @@ QString MainWindow::read_file()
             std::transform(str_to_search.begin(), str_to_search.end(), str_to_search.begin(), ::toupper);
         }
         if ( row.find(str_to_search) != std::string::npos ) {
+            file.close();
             return "Word found";
         }
     }
