@@ -38,7 +38,6 @@ void MainWindow::on_stopButton_clicked()
 }
 
 void MainWindow::interval() {
-    qDebug() << count_;
     ++count_;
     ui->lcdNumberMin->display(count_/60);
     ui->lcdNumberSec->display(count_%60);
