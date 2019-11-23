@@ -28,9 +28,14 @@ void MainWindow::on_weightLineEdit_editingFinished()
 }
 
 void MainWindow::count(){
+    if ( weight_ <= 0.0 || height_ <= 0.0 ) {
+        ui->infoTextBrowser->clear();
+        ui->resultLabel->clear();
+        return;
+    }
     double bmi = ( 10000 * weight_ ) / ( height_ * height_ );
     QString str_bmi = QString::number(bmi);
-    ui->resultLabel->setText(str_bmi);
+
     if ( bmi < 18.5 ) {
         ui->infoTextBrowser->setText("You are underweight.");
     } else if ( bmi < 25 ) {
@@ -38,4 +43,5 @@ void MainWindow::count(){
     } else {
         ui->infoTextBrowser->setText("You are overweight.");
     }
+    ui->resultLabel->setText(str_bmi);
 }
