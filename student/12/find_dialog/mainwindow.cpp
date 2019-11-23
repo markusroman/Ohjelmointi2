@@ -1,9 +1,5 @@
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
-#include <fstream>
-#include <QString>
-#include <QDebug>
-#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

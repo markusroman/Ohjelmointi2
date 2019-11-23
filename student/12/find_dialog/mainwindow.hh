@@ -2,6 +2,10 @@
 #define MAINWINDOW_HH
 
 #include <QMainWindow>
+#include <fstream>
+#include <QString>
+#include <QDebug>
+#include <algorithm>
 
 namespace Ui {
 class MainWindow;
