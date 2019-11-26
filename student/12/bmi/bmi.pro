@@ -3,7 +3,7 @@
 # Project created by QtCreator 2019-11-23T13:27:52
 #
 #-------------------------------------------------
-
+CONFIG += c++14
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

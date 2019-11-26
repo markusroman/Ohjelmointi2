@@ -33,7 +33,12 @@ void MainWindow::count(){
         ui->resultLabel->clear();
         return;
     }
-    double bmi = ( 10000 * weight_ ) / ( height_ * height_ );
+    double bmi = ( weight_ ) / ( (height_ / 100) * (height_ / 100) );
+    if ( bmi < 1.0 || bmi > 200.0 ) {
+        ui->infoTextBrowser->clear();
+        ui->resultLabel->clear();
+        return;
+    }
     QString str_bmi = QString::number(bmi);
 
     if ( bmi < 18.5 ) {
