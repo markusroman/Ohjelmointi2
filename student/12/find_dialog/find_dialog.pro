@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-11-22T19:45:26
+# Project created by QtCreator 2019-11-26T13:42:47
 #
 #-------------------------------------------------
 CONFIG += c++14
@@ -23,7 +23,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-
 SOURCES += \
         main.cpp \
         mainwindow.cpp
@@ -33,6 +32,3 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
-
-DISTFILES += \
-    input.txt
