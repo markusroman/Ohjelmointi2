@@ -6,7 +6,10 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui_(new Ui::MainWindow)
+    ui_(new Ui::MainWindow),
+    stick1(new Stick(STICK1_POS_X)),
+    stick2(new Stick(STICK2_POS_X)),
+    stick3(new Stick(STICK3_POS_X))
 {
     ui_->setupUi(this);
 
@@ -32,15 +35,18 @@ MainWindow::MainWindow(QWidget *parent) :
     scene_->setSceneRect(0, 0, BORDER_RIGHT - 1, BORDER_DOWN - 1);
 
     // Defining the color and outline of the circle
-    QBrush redBrush(Qt::red);
-    QPen blackPen(Qt::black);
-    blackPen.setWidth(2);
-    circle_ = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, blackPen, redBrush);
+    QBrush brush(Qt::green);
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
 
     timer_ = new QTimer;
     connect(timer_, SIGNAL(timeout()), this, SLOT(addSecond()));
-
     connect(ui_->pauseButton, SIGNAL(clicked(bool)), this, SLOT(pauseButtonPressed()));
+    connect(ui_->newgameButton, SIGNAL(clicked(bool)), this, SLOT(newGame()));
+    connect(ui_->disc_amountSpinbox, SIGNAL(editingFinished()), this, SLOT(newGame()));
 
     ui_->disc_amountSpinbox->setMaximum(15);
     ui_->disc_amountSpinbox->setMinimum(0);
@@ -51,6 +57,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete stick1;
+    stick1 = nullptr;
+    delete stick2;
+    stick2 = nullptr;
+    delete stick3;
+    stick3 = nullptr;
     delete ui_;
 }
 
@@ -71,5 +83,54 @@ void MainWindow::pauseButtonPressed(){
         ui_->atobButton->setEnabled(true);
         ui_->atocButton->setEnabled(true);
         ui_->btocButton->setEnabled(true);
+    }
+}
+
+void MainWindow::newGame(){
+    delete stick1;
+    stick1 = new Stick(STICK1_POS_X);
+    delete stick2;
+    stick2 = new Stick(STICK2_POS_X);
+    delete stick3;
+    stick3 = new Stick(STICK3_POS_X);
+    scene_->clear();
+    QBrush brush(Qt::green);
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+
+    count_ = 0;
+    ui_->lcdNumberMin->display(0);
+    ui_->lcdNumberSec->display(0);
+    timer_->stop();
+    ui_->atobButton->setEnabled(false);
+    ui_->atocButton->setEnabled(false);
+    ui_->btocButton->setEnabled(false);
+    disc_amount = ui_->disc_amountSpinbox->value();
+    setDiscs();
+    printDiscs();
+}
+
+void MainWindow::printDiscs(){
+    scene_->clear();
+    QBrush brush(Qt::green);
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick1->printDiscs(scene_);
+    stick2->printDiscs(scene_);
+    stick3->printDiscs(scene_);
+}
+
+void MainWindow::setDiscs()
+{
+    int radius = 80;
+    for (int i = 0; i < disc_amount; i++){
+        stick1->addDisc(radius);
+        radius = radius - 5;
     }
 }

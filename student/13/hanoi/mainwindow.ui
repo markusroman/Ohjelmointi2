@@ -186,7 +186,7 @@
      <rect>
       <x>20</x>
       <y>70</y>
-      <width>481</width>
+      <width>391</width>
       <height>80</height>
      </rect>
     </property>
@@ -225,6 +225,19 @@
     </property>
     <property name="text">
      <string>Start/Pause</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newgameButton">
+    <property name="geometry">
+     <rect>
+      <x>423</x>
+      <y>77</y>
+      <width>81</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>New game</string>
     </property>
    </widget>
   </widget>
