@@ -1,16 +1,14 @@
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
+#include <QDebug>
+#include <QTimer>
+#include <QGraphicsEllipseItem>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui_(new Ui::MainWindow),
-    count_(0)
+    ui_(new Ui::MainWindow)
 {
     ui_->setupUi(this);
-
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(addSecond()));
-    timer->start(1000);
 
     // We need a graphics scene in which to draw a circle
     scene_ = new QGraphicsScene(this);
@@ -32,6 +30,23 @@ MainWindow::MainWindow(QWidget *parent) :
     // because the circle is considered to be inside the sceneRect,
     // if its upper left corner is inside the sceneRect.
     scene_->setSceneRect(0, 0, BORDER_RIGHT - 1, BORDER_DOWN - 1);
+
+    // Defining the color and outline of the circle
+    QBrush redBrush(Qt::red);
+    QPen blackPen(Qt::black);
+    blackPen.setWidth(2);
+    circle_ = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, blackPen, redBrush);
+
+    timer_ = new QTimer;
+    connect(timer_, SIGNAL(timeout()), this, SLOT(addSecond()));
+
+    connect(ui_->pauseButton, SIGNAL(clicked(bool)), this, SLOT(pauseButtonPressed()));
+
+    ui_->disc_amountSpinbox->setMaximum(15);
+    ui_->disc_amountSpinbox->setMinimum(0);
+
+    // Clearing the status label makes the text given in ui file to disappear
+    // ui_->statusLabel->clear();
 }
 
 MainWindow::~MainWindow()
@@ -43,4 +58,18 @@ void MainWindow::addSecond(){
     ++count_;
     ui_->lcdNumberMin->display(count_/60);
     ui_->lcdNumberSec->display(count_%60);
+}
+
+void MainWindow::pauseButtonPressed(){
+    if (timer_->isActive()) {
+        timer_->stop();
+        ui_->atobButton->setEnabled(false);
+        ui_->atocButton->setEnabled(false);
+        ui_->btocButton->setEnabled(false);
+    } else {
+        timer_->start(1000);
+        ui_->atobButton->setEnabled(true);
+        ui_->atocButton->setEnabled(true);
+        ui_->btocButton->setEnabled(true);
+    }
 }
