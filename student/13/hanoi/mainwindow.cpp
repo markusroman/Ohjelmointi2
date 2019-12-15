@@ -1,3 +1,16 @@
+/* Hanoi-projekti (TIE-02201)
+ *
+ * Pääikkunan toteutustiedosto, jossa peli alustetaan ja kaikki
+ * toiminnot suoritetaan.
+ *
+ *
+ * Program author
+ * Name: Markus Röman
+ * Student number: 281954
+ * UserID: romanm
+ * E-Mail: markus.roman@tuni.fi
+ * */
+
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 #include <QDebug>
@@ -11,48 +24,52 @@ MainWindow::MainWindow(QWidget *parent) :
     stick2(new Stick(STICK2_POS_X)),
     stick3(new Stick(STICK3_POS_X))
 {
+    // Alustetaan piirtoalue. Koodi otettu suoraan esimerkkiohjelmasta.
     ui_->setupUi(this);
-
-    // We need a graphics scene in which to draw a circle
     scene_ = new QGraphicsScene(this);
-
-    // The graphicsView object is placed on the window
-    // at the following coordinates:
-    int left_margin = 10; // x coordinate
-    int top_margin = 270; // y coordinate
-    // The width of the graphicsView is BORDER_RIGHT added by 2,
-    // since the borders take one pixel on each side
-    // (1 on the left, and 1 on the right).
-    // Similarly, the height of the graphicsView is BORDER_DOWN added by 2.
+    int left_margin = 10;
+    int top_margin = 270;
     ui_->graphicsView->setGeometry(left_margin, top_margin,
                                    BORDER_RIGHT + 2, BORDER_DOWN + 2);
     ui_->graphicsView->setScene(scene_);
-
-    // The width of the scene_ is BORDER_RIGHT decreased by 1 and
-    // the height of it is BORDER_DOWN decreased by 1,
-    // because the circle is considered to be inside the sceneRect,
-    // if its upper left corner is inside the sceneRect.
     scene_->setSceneRect(0, 0, BORDER_RIGHT - 1, BORDER_DOWN - 1);
 
-    // Defining the color and outline of the circle
+    // Piirretään kolme vihreää ympyrää tappien merkeiksi.
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
     pen.setWidth(2);
-    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
-    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
-    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y,
+                                      STICK_RADIUS, STICK_RADIUS, pen, brush);
+    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y,
+                                      STICK_RADIUS, STICK_RADIUS, pen, brush);
+    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y,
+                                      STICK_RADIUS, STICK_RADIUS, pen, brush);
 
+    // Luodaan ajastin ja yhdistetään napit oikeisiin slotteihin.
     timer_ = new QTimer;
     connect(timer_, SIGNAL(timeout()), this, SLOT(addSecond()));
-    connect(ui_->pauseButton, SIGNAL(clicked(bool)), this, SLOT(pauseButtonPressed()));
+    connect(ui_->pauseButton, SIGNAL(clicked(bool)), this,
+            SLOT(pauseButtonPressed()));
     connect(ui_->newgameButton, SIGNAL(clicked(bool)), this, SLOT(newGame()));
-    connect(ui_->disc_amountSpinbox, SIGNAL(editingFinished()), this, SLOT(newGame()));
+    connect(ui_->disc_amountSpinbox, SIGNAL(editingFinished()), this,
+            SLOT(newGame()));
+    connect(ui_->atobButton, SIGNAL(clicked(bool)), this, SLOT(moveAtoB()));
+    connect(ui_->atocButton, SIGNAL(clicked(bool)), this, SLOT(moveAtoC()));
+    connect(ui_->btocButton, SIGNAL(clicked(bool)), this, SLOT(moveBtoC()));
 
+    // Estetään siirtojen teko ennen pelin aloittamista.
+    ui_->atobButton->setEnabled(false);
+    ui_->atocButton->setEnabled(false);
+    ui_->btocButton->setEnabled(false);
+
+    // Asetetaan ja tulostetaan pelin alkutilanne.
+    setDiscs();
+    printDiscs();
+    ui_->infoBrowser->setText("Start the game!");
+
+    // Asetetaan kiekkojen määrälle ylä- ja alaraja.
     ui_->disc_amountSpinbox->setMaximum(15);
     ui_->disc_amountSpinbox->setMinimum(0);
-
-    // Clearing the status label makes the text given in ui file to disappear
-    // ui_->statusLabel->clear();
 }
 
 MainWindow::~MainWindow()
@@ -75,11 +92,13 @@ void MainWindow::addSecond(){
 void MainWindow::pauseButtonPressed(){
     if (timer_->isActive()) {
         timer_->stop();
+        ui_->infoBrowser->setText("Game paused!");
         ui_->atobButton->setEnabled(false);
         ui_->atocButton->setEnabled(false);
         ui_->btocButton->setEnabled(false);
     } else {
         timer_->start(1000);
+        ui_->infoBrowser->setText("Game started!");
         ui_->atobButton->setEnabled(true);
         ui_->atocButton->setEnabled(true);
         ui_->btocButton->setEnabled(true);
@@ -97,9 +116,13 @@ void MainWindow::newGame(){
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
     pen.setWidth(2);
-    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
-    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
-    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    ui_->infoBrowser->setText("Start the game!");
+    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STICK_RADIUS,
+                                      STICK_RADIUS, pen, brush);
+    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STICK_RADIUS,
+                                      STICK_RADIUS, pen, brush);
+    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STICK_RADIUS,
+                                      STICK_RADIUS, pen, brush);
 
     count_ = 0;
     ui_->lcdNumberMin->display(0);
@@ -109,7 +132,61 @@ void MainWindow::newGame(){
     ui_->atocButton->setEnabled(false);
     ui_->btocButton->setEnabled(false);
     disc_amount = ui_->disc_amountSpinbox->value();
+    if (disc_amount == 0){
+        disc_amount = DEFAULT_DISC_AMOUNT;
+    }
     setDiscs();
+    printDiscs();
+}
+
+void MainWindow::moveAtoB()
+{
+    int discA_size = stick1->getTopDiscSize();
+    int discB_size = stick2->getTopDiscSize();
+
+    if (discA_size < discB_size || (discA_size != 0 && discB_size == 0)){
+        stick2->addDisc(discA_size);
+        stick1->removeDisc();
+    } else if (discB_size < discA_size || (discB_size != 0 && discA_size == 0)){
+        stick1->addDisc(discB_size);
+        stick2->removeDisc();
+    } else {
+        ui_->infoBrowser->setText("Both sticks are empty!");
+    }
+    printDiscs();
+}
+
+void MainWindow::moveBtoC()
+{
+    int discB_size = stick2->getTopDiscSize();
+    int discC_size = stick3->getTopDiscSize();
+
+    if (discB_size < discC_size || (discB_size != 0 && discC_size == 0)){
+        stick3->addDisc(discB_size);
+        stick2->removeDisc();
+    } else if (discC_size < discB_size || (discC_size != 0 && discB_size == 0)){
+        stick2->addDisc(discC_size);
+        stick3->removeDisc();
+    } else {
+        ui_->infoBrowser->setText("Both sticks are empty!");
+    }
+    printDiscs();
+}
+
+void MainWindow::moveAtoC()
+{
+    int discA_size = stick1->getTopDiscSize();
+    int discC_size = stick3->getTopDiscSize();
+
+    if (discA_size < discC_size || (discA_size != 0 && discC_size == 0)){
+        stick3->addDisc(discA_size);
+        stick1->removeDisc();
+    } else if (discC_size < discA_size || (discC_size != 0 && discA_size == 0)){
+        stick1->addDisc(discC_size);
+        stick3->removeDisc();
+    } else {
+        ui_->infoBrowser->setText("Both sticks are empty!");
+    }
     printDiscs();
 }
 
@@ -118,9 +195,12 @@ void MainWindow::printDiscs(){
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
     pen.setWidth(2);
-    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
-    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
-    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STEP, STEP, pen, brush);
+    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STICK_RADIUS,
+                                      STICK_RADIUS, pen, brush);
+    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STICK_RADIUS,
+                                      STICK_RADIUS, pen, brush);
+    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STICK_RADIUS,
+                                      STICK_RADIUS, pen, brush);
     stick1->printDiscs(scene_);
     stick2->printDiscs(scene_);
     stick3->printDiscs(scene_);
