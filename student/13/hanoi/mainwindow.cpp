@@ -20,9 +20,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
-    stick1(new Stick(STICK1_POS_X)),
-    stick2(new Stick(STICK2_POS_X)),
-    stick3(new Stick(STICK3_POS_X))
+    stickA(new Stick(STICKA_POS_X, Qt::red)),
+    stickB(new Stick(STICKB_POS_X, Qt::yellow)),
+    stickC(new Stick(STICKC_POS_X, Qt::lightGray))
 {
     // Alustetaan piirtoalue. Koodi otettu suoraan esimerkkiohjelmasta.
     ui_->setupUi(this);
@@ -38,11 +38,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
     pen.setWidth(2);
-    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y,
+    stick_area_1 = scene_->addEllipse(STICKA_POS_X, STICK_POS_Y,
                                       STICK_RADIUS, STICK_RADIUS, pen, brush);
-    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y,
+    stick_area_2 = scene_->addEllipse(STICKB_POS_X, STICK_POS_Y,
                                       STICK_RADIUS, STICK_RADIUS, pen, brush);
-    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y,
+    stick_area_3 = scene_->addEllipse(STICKC_POS_X, STICK_POS_Y,
                                       STICK_RADIUS, STICK_RADIUS, pen, brush);
 
     // Luodaan ajastin ja yhdistetään napit oikeisiin slotteihin.
@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->btocButton->setEnabled(false);
 
     // Asetetaan ja tulostetaan pelin alkutilanne.
+    all_moves = {};
     setDiscs();
     printDiscs();
     ui_->infoBrowser->setText("Start the game!");
@@ -74,12 +75,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete stick1;
-    stick1 = nullptr;
-    delete stick2;
-    stick2 = nullptr;
-    delete stick3;
-    stick3 = nullptr;
+    delete stickA;
+    stickA = nullptr;
+    delete stickB;
+    stickB = nullptr;
+    delete stickC;
+    stickC = nullptr;
     delete ui_;
 }
 
@@ -98,7 +99,7 @@ void MainWindow::pauseButtonPressed(){
         ui_->btocButton->setEnabled(false);
     } else {
         timer_->start(1000);
-        ui_->infoBrowser->setText("Game started!");
+        ui_->infoBrowser->setText("Make a move!");
         ui_->atobButton->setEnabled(true);
         ui_->atocButton->setEnabled(true);
         ui_->btocButton->setEnabled(true);
@@ -106,88 +107,111 @@ void MainWindow::pauseButtonPressed(){
 }
 
 void MainWindow::newGame(){
-    delete stick1;
-    stick1 = new Stick(STICK1_POS_X);
-    delete stick2;
-    stick2 = new Stick(STICK2_POS_X);
-    delete stick3;
-    stick3 = new Stick(STICK3_POS_X);
+    delete stickA;
+    stickA = new Stick(STICKA_POS_X, Qt::red);
+    delete stickB;
+    stickB = new Stick(STICKB_POS_X, Qt::yellow);
+    delete stickC;
+    stickC = new Stick(STICKC_POS_X, Qt::lightGray);
     scene_->clear();
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
     pen.setWidth(2);
     ui_->infoBrowser->setText("Start the game!");
-    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STICK_RADIUS,
+    stick_area_1 = scene_->addEllipse(STICKA_POS_X, STICK_POS_Y, STICK_RADIUS,
                                       STICK_RADIUS, pen, brush);
-    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STICK_RADIUS,
+    stick_area_2 = scene_->addEllipse(STICKB_POS_X, STICK_POS_Y, STICK_RADIUS,
                                       STICK_RADIUS, pen, brush);
-    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STICK_RADIUS,
+    stick_area_3 = scene_->addEllipse(STICKC_POS_X, STICK_POS_Y, STICK_RADIUS,
                                       STICK_RADIUS, pen, brush);
 
     count_ = 0;
     ui_->lcdNumberMin->display(0);
     ui_->lcdNumberSec->display(0);
+
     timer_->stop();
+    ui_->pauseButton->setEnabled(true);
     ui_->atobButton->setEnabled(false);
     ui_->atocButton->setEnabled(false);
     ui_->btocButton->setEnabled(false);
+
+    // Jos käyttäjä ei ole muuttanut kiekkomäärää, käytetään vakioarvoa 6.
     disc_amount = ui_->disc_amountSpinbox->value();
     if (disc_amount == 0){
         disc_amount = DEFAULT_DISC_AMOUNT;
     }
+    total_moves_ = 0;
+    updateInfo();
+    all_moves = {};
+
     setDiscs();
     printDiscs();
 }
 
 void MainWindow::moveAtoB()
 {
-    int discA_size = stick1->getTopDiscSize();
-    int discB_size = stick2->getTopDiscSize();
+    int discA_size = stickA->getTopDiscSize();
+    int discB_size = stickB->getTopDiscSize();
 
-    if (discA_size < discB_size || (discA_size != 0 && discB_size == 0)){
-        stick2->addDisc(discA_size);
-        stick1->removeDisc();
-    } else if (discB_size < discA_size || (discB_size != 0 && discA_size == 0)){
-        stick1->addDisc(discB_size);
-        stick2->removeDisc();
+    if ((discA_size < discB_size && discA_size != 0) || (discA_size != 0 && discB_size == 0)){
+        stickB->addDisc(discA_size);
+        stickA->removeDisc();
+        all_moves.push_front("A -> B");
+        ++total_moves_;
+    } else if ((discB_size < discA_size && discB_size != 0) || (discB_size != 0 && discA_size == 0)){
+        stickA->addDisc(discB_size);
+        stickB->removeDisc();
+        all_moves.push_front("B -> A");
+        ++total_moves_;
     } else {
         ui_->infoBrowser->setText("Both sticks are empty!");
     }
     printDiscs();
+    checkWin();
 }
 
 void MainWindow::moveBtoC()
 {
-    int discB_size = stick2->getTopDiscSize();
-    int discC_size = stick3->getTopDiscSize();
+    int discB_size = stickB->getTopDiscSize();
+    int discC_size = stickC->getTopDiscSize();
 
-    if (discB_size < discC_size || (discB_size != 0 && discC_size == 0)){
-        stick3->addDisc(discB_size);
-        stick2->removeDisc();
-    } else if (discC_size < discB_size || (discC_size != 0 && discB_size == 0)){
-        stick2->addDisc(discC_size);
-        stick3->removeDisc();
+    if ((discB_size < discC_size && discB_size != 0) || (discB_size != 0 && discC_size == 0)){
+        stickC->addDisc(discB_size);
+        stickB->removeDisc();
+        all_moves.push_front("B -> C");
+        ++total_moves_;
+    } else if ((discC_size < discB_size && discC_size != 0) || (discC_size != 0 && discB_size == 0)){
+        stickB->addDisc(discC_size);
+        stickC->removeDisc();
+        all_moves.push_front("C -> B");
+        ++total_moves_;
     } else {
         ui_->infoBrowser->setText("Both sticks are empty!");
     }
     printDiscs();
+    checkWin();
 }
 
 void MainWindow::moveAtoC()
 {
-    int discA_size = stick1->getTopDiscSize();
-    int discC_size = stick3->getTopDiscSize();
+    int discA_size = stickA->getTopDiscSize();
+    int discC_size = stickC->getTopDiscSize();
 
-    if (discA_size < discC_size || (discA_size != 0 && discC_size == 0)){
-        stick3->addDisc(discA_size);
-        stick1->removeDisc();
-    } else if (discC_size < discA_size || (discC_size != 0 && discA_size == 0)){
-        stick1->addDisc(discC_size);
-        stick3->removeDisc();
+    if ((discA_size < discC_size && discA_size != 0) || (discA_size != 0 && discC_size == 0)){
+        stickC->addDisc(discA_size);
+        stickA->removeDisc();
+        all_moves.push_front("A -> C");
+        ++total_moves_;
+    } else if ((discC_size < discA_size && discC_size != 0) || (discC_size != 0 && discA_size == 0)){
+        stickA->addDisc(discC_size);
+        stickC->removeDisc();
+        all_moves.push_front("C -> A");
+        ++total_moves_;
     } else {
         ui_->infoBrowser->setText("Both sticks are empty!");
     }
     printDiscs();
+    checkWin();
 }
 
 void MainWindow::printDiscs(){
@@ -195,22 +219,95 @@ void MainWindow::printDiscs(){
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
     pen.setWidth(2);
-    stick_area_1 = scene_->addEllipse(STICK1_POS_X, STICK_POS_Y, STICK_RADIUS,
+    stick_area_1 = scene_->addEllipse(STICKA_POS_X, STICK_POS_Y, STICK_RADIUS,
                                       STICK_RADIUS, pen, brush);
-    stick_area_2 = scene_->addEllipse(STICK2_POS_X, STICK_POS_Y, STICK_RADIUS,
+    stick_area_2 = scene_->addEllipse(STICKB_POS_X, STICK_POS_Y, STICK_RADIUS,
                                       STICK_RADIUS, pen, brush);
-    stick_area_3 = scene_->addEllipse(STICK3_POS_X, STICK_POS_Y, STICK_RADIUS,
+    stick_area_3 = scene_->addEllipse(STICKC_POS_X, STICK_POS_Y, STICK_RADIUS,
                                       STICK_RADIUS, pen, brush);
-    stick1->printDiscs(scene_);
-    stick2->printDiscs(scene_);
-    stick3->printDiscs(scene_);
+    stickA->printDiscs(scene_);
+    stickB->printDiscs(scene_);
+    stickC->printDiscs(scene_);
+    printLastMoves();
+    QString str_moves = QString::number(total_moves_);
+    ui_->totalmovesLabel->setText(str_moves);
 }
 
 void MainWindow::setDiscs()
 {
     int radius = 80;
     for (int i = 0; i < disc_amount; i++){
-        stick1->addDisc(radius);
-        radius = radius - 5;
+        stickA->addDisc(radius);
+        radius -= 5;
     }
+}
+
+void MainWindow::printLastMoves()
+{
+    if (all_moves.size() == 0){
+        ui_->move1Label->setText("---");
+        ui_->move2Label->setText("---");
+        ui_->move3Label->setText("---");
+        ui_->move4Label->setText("---");
+        ui_->move5Label->setText("---");
+    } else if (all_moves.size() == 1){
+        ui_->move1Label->setText(all_moves.at(0));
+    } else if (all_moves.size() == 2){
+        ui_->move1Label->setText(all_moves.at(0));
+        ui_->move2Label->setText(all_moves.at(1));
+    } else if (all_moves.size() == 3){
+        ui_->move1Label->setText(all_moves.at(0));
+        ui_->move2Label->setText(all_moves.at(1));
+        ui_->move3Label->setText(all_moves.at(2));
+    } else if (all_moves.size() == 4){
+        ui_->move1Label->setText(all_moves.at(0));
+        ui_->move2Label->setText(all_moves.at(1));
+        ui_->move3Label->setText(all_moves.at(2));
+        ui_->move4Label->setText(all_moves.at(3));
+    } else {
+        ui_->move1Label->setText(all_moves.at(0));
+        ui_->move2Label->setText(all_moves.at(1));
+        ui_->move3Label->setText(all_moves.at(2));
+        ui_->move4Label->setText(all_moves.at(3));
+        ui_->move5Label->setText(all_moves.at(4));
+    }
+}
+
+void MainWindow::checkWin()
+{
+    if (stickB->getStickSize() == disc_amount ||
+            stickC->getStickSize() == disc_amount){
+        ui_->pauseButton->setEnabled(false);
+        timer_->stop();
+        int size_int = all_moves.size();
+        QString size_str = QString::number(size_int);
+        ui_->infoBrowser->setText("Game won in " + size_str + " moves!");
+        ui_->atobButton->setEnabled(false);
+        ui_->atocButton->setEnabled(false);
+        ui_->btocButton->setEnabled(false);
+        if (count_ < top_times.value(disc_amount) || top_times.value(disc_amount) == 0){
+            top_times[disc_amount] = count_;
+            ui_->infoBrowser->setText("New top time!!!");
+        }
+    }
+}
+
+void MainWindow::updateInfo()
+{
+    int minmoves = 1;
+    for (int i = 0; i < disc_amount; ++i){
+        minmoves *= 2;
+    }
+    --minmoves;
+    QString str_disc_amount = QString::number(disc_amount);
+    QString str_minmoves = QString::number(minmoves);
+    int toptime = top_times.value(disc_amount);
+    QString min = QString::number(toptime / 60);
+    QString sec = QString::number(toptime % 60);
+    QString str_toptime = min + " min - " + sec + " sec";
+    ui_->discamountLabel->setText(str_disc_amount);
+    ui_->discamount2Label->setText(str_disc_amount);
+    ui_->minmovesLabel->setText(str_minmoves);
+    ui_->toptimeLabel->setText(str_toptime);
+
 }

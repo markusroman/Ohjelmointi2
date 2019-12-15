@@ -1,0 +1,41 @@
+Hanoi-projekti (TIE-02201)
+
+Tekstitiedosto, joka sisältää käyttöohjeet sekä listauksen pelin
+sisältämistä lisäominaisuuksista.
+
+Program author
+Name: Markus Röman
+Student number: 281954
+UserID: romanm
+E-Mail: markus.roman@tuni.fi
+
+
+KÄYTTÖOHJEET:
+
+Pelin säännöt
+    - Vain yhtä kiekkoa voi siirtää kerrallaan
+    - Pienempi kiekko ei ikinä saa olla suuremman alla
+    - Peli päättyy kun kaikki kiekot ovat suuruusjärjestyksessä
+      jossain muussa kuin aloitustapissa
+
+Uuden pelin saa aloitettua painamalla start/pause-nappia. Ennen pelin aloittamista
+voi käyttäjä halutessaan valita käytettävien kiekkojen määrän "disc amount"-spinboxista.
+Peli käyttää oletusarvona kuutta kiekkoa, jos käyttäjä ei muuta kiekkojen määrää.
+Itse peliä ohjataan kolmella käyttöliittymän oikeasta laidasta löytyvällä napilla.
+Näistä jokainen siirtää pienemmän kiekon suuremman (tai tyhjän) päälle tapilta
+toiselle (sama nappi toimii kahteen suuntaan, koska kaikki kiekot ovat eri kokoisia
+ja näin ollen vain toinen suunta on laillinen). Ohjelma pitää huolen, että laittomia
+siirtoja ei voida tehdä. Pelin voi laittaa tauolle ja jatkaa start/pause-napista.
+Tauon aikana siirtonapit on kytketty pois päältä, jotta käyttäjä ei voi "huijata"
+pelissä olevaa ajastinta. Kun kaikki kiekot ovat samassa tapissa, peli päättyy ja
+käyttäjälle ilmoitetaan pelin loppumisesta. Ohjelman voi lopettaa milloin tahansa
+close-napista.
+
+LISÄOMINAISUUDET:
+    - Tapit merkitty piirtoalueelle vihreällä ja pinot muodostuvat eri värisinä tappien päälle
+    - Juokseva kello vasemmassa yläkulmassa
+    - Vasemmassa laidassa näytetään huipputulos, joka ottaa huomioon käytetyn kiekkomäärän
+    - Pelin voi aloittaa alusta milloin tahansa "new game"-napista
+    - Ylälaidassa keskellä näkyy viimeisimmät viisi siirtoa, jotka päivittyvät pelin edetessä
+    - Ylälaidassa on myös tämänhetkinen siirtomäärä ja käytetyn kiekkomäärän perusteella laskettu
+      siirtojen minimimäärä

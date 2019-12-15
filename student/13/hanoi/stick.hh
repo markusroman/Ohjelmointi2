@@ -21,7 +21,7 @@ class Stick
 {
 public:
     // Rakentajalle annetaan parametrina tapin x-koordinaatti.
-    Stick(const int pos);
+    Stick(const int pos, Qt::GlobalColor);
     ~Stick();
     // Funktio lisää linkitetyn listan päällimmäiseksi uuden kiekon
     // parametrina annetulla säteellä.
@@ -32,6 +32,8 @@ public:
     // Palauttaa linkitetyn listan päällimmäisen kiekon säteen.
     // Funktiota käytetään siirron laillisuuden arviointiin.
     int getTopDiscSize();
+    // Palauttaa linkitetyn listan koon. Käytetään voittotarkastelussa.
+    int getStickSize();
     // Tulostaa pohjalta lähtien kaikki kiekot parametrina
     // annetulle piirtoalueelle.
     void printDiscs(QGraphicsScene* scene);
@@ -48,8 +50,9 @@ private:
     // Linkitetyn listan koko.
     int stick_size_ = 0;
     // Tapin sijainti
-    const int pos_y_ = 75;
+    const int pos_y_ = 67;
     const int pos_x_;
+    Qt::GlobalColor color_;
 };
 
 #endif // STICK_HH
