@@ -1,6 +1,2 @@
-Ohjelmointi 2: Perusteet / Programming 2: Basics
-
-Syksy/Fall 2019
-
-Tämä repo sisältää opiskelijalle jaettavat materiaalit.
-This repository contains materials for students.
+Tämä repo sisältää Tampereen yliopiston TIE-02201 ohjelmointi 2: perusteet -kurssin materiaalit ja omat ratkaisuni.
+This repository contains materials my solutions for course TIE-02201 programming 2: basics at University of Tampere.
